@@ -259,7 +259,7 @@ button{border:none;background:none;}
 #app .app-header{text-align:center;margin-bottom:24px;}
 #app .app-header h2{font-size:20px;font-weight:800;color:var(--navy);}
 #app .app-header p{font-size:12px;color:var(--mid);margin-top:4px;}
-#app .phones-row{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+#app .phones-row{display:grid;grid-template-columns:repeat(3,auto);gap:24px;justify-content:center;}
 .phone-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
 .phone-label{font-size:9px;font-weight:700;color:var(--mid);letter-spacing:.5px;text-align:center;}
 .phone-shell{width:200px;background:#0F1E30;border-radius:38px;padding:12px 9px 9px;box-shadow:0 20px 50px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.07);}
@@ -308,7 +308,7 @@ button{border:none;background:none;}
     <div class="logo-icon">🏥</div>
     <div>
       <div class="logo-name">KAHA Digital Platform</div>
-      <div class="logo-sub">INTERACTIVE PROTOTYPE · NEMITECH SOLUTIONS</div>
+      <div class="logo-sub">INTERACTIVE PROTOTYPE · APRIL 2026</div>
     </div>
   </div>
   <div class="tabs">
@@ -422,7 +422,7 @@ button{border:none;background:none;}
         <div class="footer-col"><div class="footer-title">Quick Links</div><div class="footer-link" onclick="showPage('ws','about',document.querySelectorAll('.sn-link')[1])">About KAHA</div><div class="footer-link" onclick="showPage('ws','membership',document.querySelectorAll('.sn-link')[2])">Membership</div><div class="footer-link" onclick="showPage('ws','events',document.querySelectorAll('.sn-link')[3])">Events</div><div class="footer-link" onclick="showPage('ws','publications',document.querySelectorAll('.sn-link')[4])">Publications</div></div>
         <div class="footer-col"><div class="footer-title">Contact</div><div class="footer-link">secretariat@kaha.or.ke</div><div class="footer-link">+254 XX XXX XXXX</div><div class="footer-link">Nairobi, Kenya</div><div class="footer-link">Mon–Fri 8am–5pm</div></div>
       </div>
-      <div class="footer-copy">© 2025 Kenya Association of Health Administrators · All rights reserved · Powered by Nemitech Solutions</div>
+      <div class="footer-copy">© 2025 Kenya Association of Health Administrators · All rights reserved</div>
     </footer>
   </div>
 
@@ -454,7 +454,7 @@ button{border:none;background:none;}
         <div class="dir-card"><div class="dir-avatar">🏥</div><div style="font-size:10px;color:var(--teal);font-weight:700;margin-bottom:2px">National Treasurer</div><div style="font-size:12px;font-weight:700;color:var(--text)">KAHA Official</div></div>
       </div>
     </div>
-    <footer class="site-footer"><div class="footer-copy">© 2025 Kenya Association of Health Administrators · Powered by Nemitech Solutions</div></footer>
+    <footer class="site-footer"><div class="footer-copy">© 2025 Kenya Association of Health Administrators</div></footer>
   </div>
 
   <!-- MEMBERSHIP -->
@@ -475,7 +475,7 @@ button{border:none;background:none;}
         </div>
       </div>
     </div>
-    <footer class="site-footer"><div class="footer-copy">© 2025 Kenya Association of Health Administrators · Powered by Nemitech Solutions</div></footer>
+    <footer class="site-footer"><div class="footer-copy">© 2025 Kenya Association of Health Administrators</div></footer>
   </div>
 
   <!-- EVENTS -->
@@ -493,7 +493,7 @@ button{border:none;background:none;}
       <div class="event-card" data-tag="AGM"><div class="event-date-col" style="background:var(--navy)"><div style="font-size:18px;font-weight:800;color:#fff;line-height:1">AUG</div><div style="font-size:14px;color:rgba(255,255,255,.8)">02</div></div><div class="event-body"><div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><span class="badge-tag" style="background:var(--blueLt,#EFF4FF);color:#2563EB">AGM</span><span style="font-size:10px;color:var(--lt)">📍 Virtual · Zoom Link Provided</span></div><div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px">Annual General Meeting 2025</div><div style="font-size:11px;color:var(--mid);line-height:1.6;margin-bottom:8px">The Annual General Meeting for all KAHA members. Annual reports, elections, and key resolutions for 2025/2026.</div><div style="font-size:11px;font-weight:600;color:var(--teal)">💰 Free for all members</div><div style="margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--mid);margin-bottom:4px"><span>Registrations: 312 / 500</span><span style="color:var(--navy);font-weight:700">62%</span></div><div class="progress-bar"><div class="progress-fill" style="width:62%;background:var(--navy)"></div></div></div></div><div class="event-info"><button class="btn btn-navy btn-sm">Register →</button><button class="btn btn-outline btn-sm">Details</button></div></div>
       <div class="event-card" data-tag="Conference"><div class="event-date-col" style="background:var(--amber)"><div style="font-size:18px;font-weight:800;color:#fff;line-height:1">DEC</div><div style="font-size:14px;color:rgba(255,255,255,.9)">01</div></div><div class="event-body"><div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><span class="badge-tag" style="background:var(--amberLt);color:var(--amber)">Conference</span><span style="font-size:10px;color:var(--lt)">📍 KICC, Nairobi · 3 Days</span></div><div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px">9th Annual Scientific Conference 2025</div><div style="font-size:11px;color:var(--mid);line-height:1.6;margin-bottom:8px">KAHA's flagship annual event bringing together health administrators, policymakers, and practitioners from across Kenya and the East African region.</div><div style="font-size:11px;font-weight:600;color:var(--teal)">💰 KES 8,500 (Members) · KES 12,000 (Non-members)</div><div style="margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--mid);margin-bottom:4px"><span>Registrations: 455 / 800</span><span style="color:var(--amber);font-weight:700">57%</span></div><div class="progress-bar"><div class="progress-fill" style="width:57%;background:var(--amber)"></div></div></div></div><div class="event-info"><button class="btn btn-sm" style="background:var(--amber);color:#fff">Register →</button><button class="btn btn-outline btn-sm">Details</button></div></div>
     </div>
-    <footer class="site-footer"><div class="footer-copy">© 2025 Kenya Association of Health Administrators · Powered by Nemitech Solutions</div></footer>
+    <footer class="site-footer"><div class="footer-copy">© 2025 Kenya Association of Health Administrators</div></footer>
   </div>
 
   <!-- PUBLICATIONS -->
@@ -516,7 +516,7 @@ button{border:none;background:none;}
         <div class="pub-card"><div class="pub-thumb">📋</div><div class="pub-body"><span class="badge-tag" style="background:var(--mintLt);color:var(--teal);margin-bottom:6px;display:inline-block">Policy Briefs</span><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4">Health Admin Competency Framework</div><div style="font-size:10px;color:var(--lt);margin-bottom:10px">Nov 2024 · PDF · 3.5MB</div><button class="btn btn-teal btn-sm" style="width:100%">⬇ Download</button></div></div>
       </div>
     </div>
-    <footer class="site-footer"><div class="footer-copy">© 2025 Kenya Association of Health Administrators · Powered by Nemitech Solutions</div></footer>
+    <footer class="site-footer"><div class="footer-copy">© 2025 Kenya Association of Health Administrators</div></footer>
   </div>
 
   <!-- CONTACT -->
@@ -544,7 +544,7 @@ button{border:none;background:none;}
         </div>
       </div>
     </div>
-    <footer class="site-footer"><div class="footer-copy">© 2025 Kenya Association of Health Administrators · Powered by Nemitech Solutions</div></footer>
+    <footer class="site-footer"><div class="footer-copy">© 2025 Kenya Association of Health Administrators</div></footer>
   </div>
 </div>
 
@@ -1190,8 +1190,130 @@ button{border:none;background:none;}
       </div>
     </div>
 
+    <!-- PHONE 5: NOTIFICATIONS -->
+    <div class="phone-wrap">
+      <div class="phone-label">NOTIFICATIONS</div>
+      <div class="phone-shell">
+        <div class="phone-notch"><div class="phone-notch-inner"><div class="phone-camera"></div><div class="phone-speaker"></div></div></div>
+        <div class="phone-screen">
+          <div class="phone-status"><span class="phone-status-time">9:41</span><span style="font-size:10px">📶🔋</span></div>
+          <div class="phone-screen-inner" style="height:100%;overflow-y:auto">
+            <div style="background:var(--navy);padding:12px 14px 14px;display:flex;align-items:center;justify-content:space-between">
+              <div style="font-size:14px;font-weight:700;color:#fff">🔔 Notifications</div>
+              <span style="font-size:10px;color:var(--mint);cursor:pointer" onclick="alert('All notifications marked as read')">Mark all read</span>
+            </div>
+            <div style="padding:12px 13px;background:var(--bg);display:flex;flex-direction:column;gap:8px">
+              <!-- Today -->
+              <div style="font-size:9px;font-weight:700;color:var(--lt);letter-spacing:1px">TODAY</div>
+              <div class="ph-notif" style="border-left:3px solid var(--teal);cursor:pointer;background:#fff" onclick="alert('Conference 2025 registration is now open!\n\nEarly bird: KES 8,500\nDeadline: 30 September 2025')">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+                  <div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text)">🎉 Conference Registration Open</div><div style="font-size:9px;color:var(--mid);margin-top:3px;line-height:1.4">9th Annual Scientific Conference 2025 — early bird registration now open at KICC Nairobi.</div></div>
+                  <div style="width:7px;height:7px;background:var(--teal);border-radius:50%;flex-shrink:0;margin-top:4px"></div>
+                </div>
+                <div style="font-size:8px;color:var(--lt);margin-top:5px">2 hours ago</div>
+              </div>
+              <div class="ph-notif" style="border-left:3px solid var(--amber);cursor:pointer;background:#fff" onclick="alert('Your membership renewal is due in 60 days.\n\nTap Pay Fees to renew now and stay active.')">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+                  <div style="flex:1"><div style="font-size:10px;font-weight:700;color:var(--text)">⚠️ Renewal Due in 60 Days</div><div style="font-size:9px;color:var(--mid);margin-top:3px;line-height:1.4">Your KAHA membership expires Dec 2025. Renew early to maintain access.</div></div>
+                  <div style="width:7px;height:7px;background:var(--amber);border-radius:50%;flex-shrink:0;margin-top:4px"></div>
+                </div>
+                <div style="font-size:8px;color:var(--lt);margin-top:5px">5 hours ago</div>
+              </div>
+              <!-- Yesterday -->
+              <div style="font-size:9px;font-weight:700;color:var(--lt);letter-spacing:1px;margin-top:4px">YESTERDAY</div>
+              <div class="ph-notif" style="border-left:3px solid var(--green);cursor:pointer;background:#fff" onclick="alert('Payment Confirmed!\nKES 5,050 received via M-Pesa.\nRef: KAHA-2025-00412')">
+                <div style="font-size:10px;font-weight:700;color:var(--text)">✅ Payment Confirmed</div>
+                <div style="font-size:9px;color:var(--mid);margin-top:3px">KES 5,050 received for Annual Membership Fee 2025. Receipt emailed.</div>
+                <div style="font-size:8px;color:var(--lt);margin-top:5px">Yesterday · 14:22</div>
+              </div>
+              <div class="ph-notif" style="border-left:3px solid var(--navy);cursor:pointer;background:#fff" onclick="alert('New CPD material available:\nHealth Systems Leadership — Module 3\n\nDownload from Resources tab.')">
+                <div style="font-size:10px;font-weight:700;color:var(--text)">📚 New CPD Material Available</div>
+                <div style="font-size:9px;color:var(--mid);margin-top:3px">Health Systems Leadership — Module 3 is now available for download.</div>
+                <div style="font-size:8px;color:var(--lt);margin-top:5px">Yesterday · 09:10</div>
+              </div>
+              <!-- Earlier -->
+              <div style="font-size:9px;font-weight:700;color:var(--lt);letter-spacing:1px;margin-top:4px">EARLIER</div>
+              <div class="ph-notif" style="border-left:3px solid var(--mid);cursor:pointer;background:#fff">
+                <div style="font-size:10px;font-weight:700;color:var(--text)">📢 AGM 2025 — Save the Date</div>
+                <div style="font-size:9px;color:var(--mid);margin-top:3px">Annual General Meeting scheduled for Aug 02, 2025. Virtual via Zoom.</div>
+                <div style="font-size:8px;color:var(--lt);margin-top:5px">3 days ago</div>
+              </div>
+              <div class="ph-notif" style="border-left:3px solid var(--mid);cursor:pointer;background:#fff">
+                <div style="font-size:10px;font-weight:700;color:var(--text)">🏥 Welcome to KAHA!</div>
+                <div style="font-size:9px;color:var(--mid);margin-top:3px">Your membership application has been approved. Welcome to the Kenya Association of Health Administrators.</div>
+                <div style="font-size:8px;color:var(--lt);margin-top:5px">Apr 20, 2025</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ph-home-indicator"><div class="ph-home-bar"></div></div>
+      </div>
+    </div>
+
+    <!-- PHONE 6: MEMBER DIRECTORY -->
+    <div class="phone-wrap">
+      <div class="phone-label">MEMBER DIRECTORY</div>
+      <div class="phone-shell">
+        <div class="phone-notch"><div class="phone-notch-inner"><div class="phone-camera"></div><div class="phone-speaker"></div></div></div>
+        <div class="phone-screen">
+          <div class="phone-status"><span class="phone-status-time">9:41</span><span style="font-size:10px">📶🔋</span></div>
+          <div class="phone-screen-inner" style="height:100%;overflow-y:auto">
+            <div style="background:var(--navy);padding:12px 14px 14px">
+              <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:10px">👥 Member Directory</div>
+              <div style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:7px">
+                <span style="font-size:13px">🔍</span>
+                <span style="font-size:11px;color:rgba(255,255,255,.45)">Search members...</span>
+              </div>
+            </div>
+            <!-- Filter chips -->
+            <div style="padding:10px 13px;background:var(--bg);display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto">
+              <span style="padding:4px 11px;background:var(--teal);border-radius:20px;font-size:9px;color:#fff;white-space:nowrap;cursor:pointer">All</span>
+              <span style="padding:4px 11px;background:#fff;border:1.5px solid var(--border);border-radius:20px;font-size:9px;color:var(--mid);white-space:nowrap;cursor:pointer">Life</span>
+              <span style="padding:4px 11px;background:#fff;border:1.5px solid var(--border);border-radius:20px;font-size:9px;color:var(--mid);white-space:nowrap;cursor:pointer">Individual</span>
+              <span style="padding:4px 11px;background:#fff;border:1.5px solid var(--border);border-radius:20px;font-size:9px;color:var(--mid);white-space:nowrap;cursor:pointer">Nairobi</span>
+            </div>
+            <div style="padding:0 13px 13px;background:var(--bg);display:flex;flex-direction:column;gap:7px">
+              <div style="font-size:9px;color:var(--lt);font-weight:600;letter-spacing:.5px">2,412 MEMBERS</div>
+              <!-- Member cards -->
+              <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="alert('Health Administrator A\nLife Member · KAHA/LM/001\nCounty Director, Nairobi County\n\nContact via secretariat')">
+                <div style="width:38px;height:38px;background:linear-gradient(135deg,var(--teal),var(--navy));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🏥</div>
+                <div style="flex:1"><div style="font-size:11px;font-weight:700;color:var(--text)">Health Admin A</div><div style="font-size:9px;color:var(--mid)">County Director · Nairobi</div></div>
+                <span style="font-size:8px;font-weight:700;background:var(--mintLt);color:var(--teal);padding:2px 7px;border-radius:10px">Life</span>
+              </div>
+              <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="alert('Health Administrator B\nLife Member · KAHA/LM/002\nCEO, Major Hospital Nairobi')">
+                <div style="width:38px;height:38px;background:linear-gradient(135deg,var(--amber),#c47a3a);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🏥</div>
+                <div style="flex:1"><div style="font-size:11px;font-weight:700;color:var(--text)">Health Admin B</div><div style="font-size:9px;color:var(--mid)">CEO · Major Hospital</div></div>
+                <span style="font-size:8px;font-weight:700;background:var(--mintLt);color:var(--teal);padding:2px 7px;border-radius:10px">Life</span>
+              </div>
+              <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="alert('Health Administrator C\nIndividual Member · KAHA/001\nMoH Director, Kisumu County')">
+                <div style="width:38px;height:38px;background:linear-gradient(135deg,var(--navy),#2A4A7A);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🏥</div>
+                <div style="flex:1"><div style="font-size:11px;font-weight:700;color:var(--text)">Health Admin C</div><div style="font-size:9px;color:var(--mid)">MoH Director · Kisumu</div></div>
+                <span style="font-size:8px;font-weight:700;background:#EFF4FF;color:#2563EB;padding:2px 7px;border-radius:10px">Individual</span>
+              </div>
+              <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="alert('Health Administrator D\nCorporate Member · KAHA/CORP/001\nAga Khan Health Services')">
+                <div style="width:38px;height:38px;background:linear-gradient(135deg,var(--green),#155a34);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🏥</div>
+                <div style="flex:1"><div style="font-size:11px;font-weight:700;color:var(--text)">Health Admin D</div><div style="font-size:9px;color:var(--mid)">Aga Khan Health Services</div></div>
+                <span style="font-size:8px;font-weight:700;background:var(--greenLt);color:var(--green);padding:2px 7px;border-radius:10px">Corporate</span>
+              </div>
+              <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="alert('Health Administrator E\nIndividual Member · KAHA/002\nHospital Admin, Mombasa County')">
+                <div style="width:38px;height:38px;background:linear-gradient(135deg,#8B5CF6,#6D28D9);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🏥</div>
+                <div style="flex:1"><div style="font-size:11px;font-weight:700;color:var(--text)">Health Admin E</div><div style="font-size:9px;color:var(--mid)">Hospital Admin · Mombasa</div></div>
+                <span style="font-size:8px;font-weight:700;background:#EFF4FF;color:#2563EB;padding:2px 7px;border-radius:10px">Individual</span>
+              </div>
+              <div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:11px 12px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="alert('Health Administrator F\nStudent Member · KAHA/STU/001\nStrathmore University')">
+                <div style="width:38px;height:38px;background:linear-gradient(135deg,#F59E0B,#B45309);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🏥</div>
+                <div style="flex:1"><div style="font-size:11px;font-weight:700;color:var(--text)">Health Admin F</div><div style="font-size:9px;color:var(--mid)">Student · Strathmore Uni.</div></div>
+                <span style="font-size:8px;font-weight:700;background:var(--amberLt);color:var(--amber);padding:2px 7px;border-radius:10px">Student</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ph-home-indicator"><div class="ph-home-bar"></div></div>
+      </div>
+    </div>
+
   </div>
-  <div style="text-align:center;margin-top:24px;font-size:11px;color:var(--mid)">💡 The left phone navigates via tabs · The right phone shows the app onboarding — tap <strong>Get Started</strong> then swipe through the 3 overview slides</div>
+  <div style="text-align:center;margin-top:24px;font-size:11px;color:var(--mid)">💡 Row 1: Interactive Home (navigate via tabs) · Certificate · Payment Success &nbsp;|&nbsp; Row 2: App Overview (tap Get Started) · Notifications · Member Directory</div>
 </div>
 
 <script>
