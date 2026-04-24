@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAHA Digital Platform — Interactive Prototype</title>
+<style>
+/* ── RESET & TOKENS ─────────────────────────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#1A2B4A; --navyDk:#0F1E30; --teal:#028090; --mint:#02C39A;
+  --amber:#F4A261; --red:#E24C4C; --green:#1E9E6E;
+  --white:#fff; --bg:#F0F5F7; --border:#E2EBF0;
+  --text:#1A2B4A; --mid:#4A6274; --lt:#8AA0AD;
+  --mintLt:#D0F5EC; --amberLt:#FEF0E3; --redLt:#FEECEC; --greenLt:#E2F5EF;
+}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#E4EDF0;min-height:100vh;}
+button,a{cursor:pointer;font-family:inherit;}
+button{border:none;background:none;}
+/* ── TOP CHROME ─────────────────────────────────────────────── */
+#chrome{background:var(--navyDk);padding:10px 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.3);}
+#chrome .logo{display:flex;align-items:center;gap:9px;}
+#chrome .logo-icon{width:32px;height:32px;background:var(--teal);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+#chrome .logo-name{font-size:13px;font-weight:700;color:#fff;}
+#chrome .logo-sub{font-size:8px;color:var(--mint);letter-spacing:.8px;}
+#chrome .tabs{display:flex;gap:0;margin-left:20px;}
+#chrome .tab{padding:7px 18px;background:none;border:none;border-radius:6px;font-size:11px;color:rgba(255,255,255,.55);cursor:pointer;transition:all .15s;font-weight:500;}
+#chrome .tab.active{background:var(--teal);color:#fff;font-weight:700;}
+#chrome .badge{margin-left:auto;padding:4px 12px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:5px;font-size:10px;color:rgba(255,255,255,.4);}
+
+/* ── SECTION VISIBILITY ──────────────────────────────────────── */
+.section{display:none;}
+.section.active{display:block;}
+
+/* ── SHARED COMPONENTS ──────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:9px 18px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;border:none;}
+.btn-teal{background:var(--teal);color:#fff;}
+.btn-teal:hover{background:#039AAD;}
+.btn-navy{background:var(--navy);color:#fff;}
+.btn-outline{background:transparent;border:1.5px solid var(--teal);color:var(--teal);}
+.btn-outline:hover{background:var(--mintLt);}
+.btn-sm{padding:5px 12px;font-size:11px;}
+.btn-green{background:#00A850;color:#fff;}
+.btn-blue{background:#1A56DB;color:#fff;}
+.badge-tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:9px;font-weight:700;}
+.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;}
+.field{margin-bottom:12px;}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--text);margin-bottom:5px;}
+.field input,.field select,.field textarea{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--text);font-family:inherit;transition:border .15s;}
+.field input:focus,.field select:focus{outline:none;border-color:var(--teal);}
+.progress-bar{height:5px;background:var(--border);border-radius:3px;margin-top:5px;}
+.progress-fill{height:100%;border-radius:3px;transition:width .3s;}
+
+/* ══════════════════════════════════════════════════════════════
+   1. PUBLIC WEBSITE
+══════════════════════════════════════════════════════════════ */
+#website .site-nav{background:var(--navy);padding:0 28px;display:flex;align-items:center;position:sticky;top:52px;z-index:900;}
+#website .site-nav .sn-logo{display:flex;align-items:center;gap:9px;padding:12px 0;margin-right:20px;flex-shrink:0;}
+#website .site-nav .sn-icon{width:30px;height:30px;background:var(--teal);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+#website .site-nav .sn-links{display:flex;flex:1;}
+#website .site-nav .sn-link{padding:15px 13px;font-size:11px;color:rgba(255,255,255,.6);cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap;}
+#website .site-nav .sn-link.active{color:#fff;border-bottom-color:var(--mint);font-weight:700;}
+#website .site-nav .sn-link:hover{color:#fff;}
+#website .site-nav .sn-btns{display:flex;gap:8px;margin-left:auto;}
+#website .site-nav .sn-btn{padding:7px 14px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;}
+#website .page{display:none;}
+#website .page.active{display:block;}
+/* Hero */
+.hero-wrap{background:linear-gradient(135deg,#1A2B4A 0%,#1A4A5A 50%,#028090 100%);padding:52px 28px;position:relative;overflow:hidden;}
+.hero-wrap::before{content:'';position:absolute;top:-80px;right:-80px;width:360px;height:360px;background:rgba(2,195,154,.06);border-radius:50%;}
+.hero-wrap::after{content:'';position:absolute;bottom:-60px;left:-60px;width:260px;height:260px;background:rgba(255,255,255,.03);border-radius:50%;}
+.hero-inner{max-width:1100px;margin:0 auto;display:flex;gap:48px;align-items:center;position:relative;z-index:1;}
+.hero-badge{display:inline-block;background:rgba(2,195,154,.15);border:1px solid rgba(2,195,154,.3);border-radius:20px;padding:4px 14px;font-size:10px;color:var(--mint);font-weight:600;margin-bottom:14px;letter-spacing:.5px;}
+.hero-title{font-size:34px;font-weight:800;color:#fff;line-height:1.15;margin-bottom:12px;}
+.hero-title span{color:var(--mint);}
+.hero-sub{font-size:13px;color:rgba(255,255,255,.65);line-height:1.7;margin-bottom:22px;max-width:420px;}
+.hero-btns{display:flex;gap:10px;}
+.hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex-shrink:0;}
+.stat-box{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:16px 18px;}
+.stat-val{font-size:24px;font-weight:800;line-height:1;}
+.stat-lbl{font-size:10px;color:rgba(255,255,255,.55);margin-top:4px;}
+.features-bar{background:var(--teal);padding:0 28px;}
+.features-inner{max-width:1100px;margin:0 auto;display:flex;}
+.feat-item{flex:1;padding:14px 16px;border-right:1px solid rgba(255,255,255,.15);display:flex;gap:10px;align-items:center;}
+.feat-item:last-child{border-right:none;}
+.feat-t{font-size:11px;font-weight:700;color:#fff;}
+.feat-d{font-size:9px;color:rgba(255,255,255,.7);margin-top:2px;}
+.page-body{max-width:1100px;margin:0 auto;padding:28px;}
+.news-card{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;margin-bottom:12px;cursor:pointer;transition:box-shadow .15s;}
+.news-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08);}
+.news-accent{width:5px;flex-shrink:0;}
+.news-body{flex:1;padding:14px 16px;}
+.news-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+.news-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:5px;}
+.news-excerpt{font-size:11px;color:var(--mid);line-height:1.6;}
+.read-more{font-size:11px;color:var(--teal);font-weight:600;margin-top:8px;display:inline-block;}
+.sidebar-widget{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px;}
+.widget-head{background:var(--navy);padding:10px 14px;font-size:12px;font-weight:700;color:#fff;}
+.widget-body{padding:14px;}
+.evt-row{display:flex;gap:10px;align-items:center;margin-bottom:10px;cursor:pointer;}
+.evt-row:hover .evt-title{color:var(--teal);}
+.evt-date{width:42px;border-radius:7px;padding:5px 4px;text-align:center;flex-shrink:0;}
+.cta-box{background:linear-gradient(135deg,var(--teal),var(--navy));border-radius:12px;padding:20px 16px;text-align:center;margin-bottom:14px;}
+/* Page header */
+.page-hdr{background:linear-gradient(135deg,var(--navy),var(--teal));padding:32px 28px;}
+.page-hdr-inner{max-width:1100px;margin:0 auto;}
+.page-breadcrumb{font-size:11px;color:var(--mint);margin-bottom:6px;}
+.page-hdr-title{font-size:26px;font-weight:800;color:#fff;}
+.page-hdr-sub{font-size:12px;color:rgba(255,255,255,.6);margin-top:5px;}
+/* Membership cards */
+.mem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.mem-card{background:#fff;border:2px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .15s;cursor:pointer;}
+.mem-card:hover{border-color:var(--teal);}
+.mem-card.featured{border-color:var(--teal);}
+.mem-banner{background:var(--teal);text-align:center;padding:4px;font-size:9px;color:#fff;font-weight:700;}
+.mem-body{padding:18px 16px;}
+.mem-price{margin:10px 0;}
+.mem-price-val{font-size:22px;font-weight:800;}
+.mem-price-freq{font-size:10px;color:var(--lt);}
+.mem-benefit{display:flex;gap:7px;align-items:flex-start;margin-bottom:5px;font-size:10px;color:var(--mid);}
+.mem-benefit span:first-child{color:var(--mint);font-weight:700;flex-shrink:0;}
+/* Events page */
+.filter-bar{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.filter-pill{padding:5px 14px;border:1.5px solid var(--border);border-radius:20px;font-size:11px;color:var(--mid);cursor:pointer;background:#fff;transition:all .15s;}
+.filter-pill.active,.filter-pill:hover{background:var(--teal);border-color:var(--teal);color:#fff;}
+.event-card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;display:flex;margin-bottom:14px;cursor:pointer;transition:box-shadow .15s;}
+.event-card:hover{box-shadow:0 4px 20px rgba(0,0,0,.1);}
+.event-date-col{width:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 0;flex-shrink:0;}
+.event-body{flex:1;padding:16px 18px;}
+.event-info{flex-shrink:0;padding:16px;display:flex;flex-direction:column;gap:7px;justify-content:center;}
+/* Publications */
+.pub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.pub-card{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:box-shadow .15s;}
+.pub-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08);}
+.pub-thumb{background:var(--bg);padding:20px;text-align:center;font-size:40px;border-bottom:1px solid var(--border);}
+.pub-body{padding:14px;}
+/* Contact */
+.contact-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+/* Footer */
+.site-footer{background:var(--navyDk);padding:28px;}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;gap:28px;}
+.footer-brand{flex:2;}
+.footer-col{flex:1;}
+.footer-title{font-size:11px;font-weight:700;color:var(--mint);margin-bottom:10px;letter-spacing:.5px;}
+.footer-link{font-size:10px;color:rgba(255,255,255,.4);margin-bottom:5px;cursor:pointer;}
+.footer-link:hover{color:var(--mint);}
+.footer-copy{border-top:1px solid rgba(255,255,255,.06);margin-top:18px;padding-top:14px;text-align:center;font-size:9px;color:rgba(255,255,255,.2);}
+.social-pills{display:flex;gap:7px;margin-top:12px;}
+.social-pill{padding:4px 10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:5px;font-size:9px;color:rgba(255,255,255,.5);cursor:pointer;}
+
+/* ══════════════════════════════════════════════════════════════
+   2. ADMIN DASHBOARD
+══════════════════════════════════════════════════════════════ */
+#dashboard{display:none;}
+#dashboard.active{display:flex;height:calc(100vh - 52px);}
+#dashboard .db-sidebar{width:190px;background:var(--navyDk);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+#dashboard .db-logo{padding:14px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:8px;}
+#dashboard .db-nav{flex:1;padding:8px 0;}
+#dashboard .db-item{padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background .15s;border-left:3px solid transparent;}
+#dashboard .db-item:hover{background:rgba(255,255,255,.05);}
+#dashboard .db-item.active{background:var(--teal);border-left-color:var(--mint);}
+#dashboard .db-item-icon{font-size:16px;width:20px;text-align:center;}
+#dashboard .db-item-label{font-size:11px;color:rgba(255,255,255,.5);}
+#dashboard .db-item.active .db-item-label{color:#fff;font-weight:700;}
+#dashboard .db-user{padding:12px 14px;border-top:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:8px;}
+#dashboard .db-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+#dashboard .db-topbar{background:#fff;border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+#dashboard .db-content{flex:1;overflow:auto;padding:20px;background:var(--bg);}
+#dashboard .db-page{display:none;}
+#dashboard .db-page.active{display:block;}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+.kpi-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 16px;}
+.kpi-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.kpi-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.kpi-val{font-size:22px;font-weight:700;color:var(--text);line-height:1;}
+.kpi-lbl{font-size:11px;color:var(--lt);margin-top:3px;}
+.kpi-delta{font-size:10px;font-weight:600;}
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:16px;}
+.bars{display:flex;align-items:flex-end;gap:5px;height:90px;margin-top:10px;}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.bar-fill{width:100%;border-radius:3px 3px 0 0;transition:height .3s;cursor:pointer;}
+.bar-fill:hover{opacity:.8;}
+.bar-month{font-size:7px;color:var(--lt);}
+.breakdown-row{margin-bottom:8px;}
+.breakdown-header{display:flex;justify-content:space-between;margin-bottom:3px;font-size:10px;}
+.breakdown-track{height:6px;background:var(--border);border-radius:3px;}
+.breakdown-fill{height:100%;border-radius:3px;}
+.db-table{width:100%;border-collapse:collapse;}
+.db-table th{padding:9px 14px;text-align:left;font-size:10px;color:var(--lt);font-weight:600;background:var(--bg);border-bottom:1px solid var(--border);}
+.db-table td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:11px;}
+.db-table tr:hover td{background:var(--bg);}
+.member-cell{display:flex;align-items:center;gap:9px;}
+.m-avatar{width:30px;height:30px;background:var(--bg);border:1px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.action-group{display:flex;gap:5px;}
+.action-btn{padding:3px 9px;border-radius:6px;font-size:9px;cursor:pointer;font-weight:600;transition:opacity .15s;}
+.action-btn:hover{opacity:.8;}
+/* Stats summary for payments */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px;}
+/* Events dashboard */
+.event-prog-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;display:flex;gap:16px;align-items:flex-start;}
+/* Comms */
+.group-pills{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;}
+.group-pill{padding:5px 12px;border:1.5px solid var(--border);border-radius:20px;font-size:11px;color:var(--mid);cursor:pointer;background:#fff;}
+.group-pill.active{background:var(--teal);border-color:var(--teal);color:#fff;}
+.msg-area{background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:12px;min-height:80px;font-size:12px;color:var(--lt);cursor:text;}
+/* Reports */
+.report-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;cursor:pointer;transition:box-shadow .15s;}
+.report-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08);}
+
+/* ══════════════════════════════════════════════════════════════
+   3. MEMBER PORTAL
+══════════════════════════════════════════════════════════════ */
+#portal .portal-nav{background:var(--navy);padding:0 24px;display:flex;align-items:center;position:sticky;top:52px;z-index:900;}
+#portal .portal-subtabs{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;display:flex;position:sticky;top:102px;z-index:800;}
+#portal .portal-subtab{padding:11px 18px;font-size:11px;cursor:pointer;border-bottom:3px solid transparent;color:var(--lt);transition:all .15s;}
+#portal .portal-subtab.active{border-bottom-color:var(--teal);color:var(--teal);font-weight:700;}
+#portal .portal-page{display:none;}
+#portal .portal-page.active{display:block;}
+#portal .portal-content{max-width:1100px;margin:0 auto;padding:24px;}
+.reg-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px;}
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px;}
+.cat-item{padding:10px 8px;border:2px solid var(--border);border-radius:8px;text-align:center;cursor:pointer;transition:all .15s;}
+.cat-item:hover,.cat-item.selected{border-color:var(--teal);background:var(--mintLt);}
+.cat-name{font-size:11px;font-weight:700;color:var(--text);}
+.cat-price{font-size:9px;color:var(--mid);margin-top:2px;}
+.upload-zone{border:2px dashed var(--teal);border-radius:10px;padding:22px;text-align:center;background:var(--mintLt);cursor:pointer;transition:all .15s;margin-bottom:14px;}
+.upload-zone:hover{background:#B0EDD8;}
+.progress-steps{display:flex;gap:4px;padding:14px 20px 6px;}
+.prog-step{flex:1;text-align:center;}
+.prog-step-bar{height:4px;border-radius:2px;margin-bottom:5px;}
+.prog-step-lbl{font-size:9px;color:var(--lt);}
+.prog-step.active .prog-step-bar{background:var(--teal);}
+.prog-step.active .prog-step-lbl{color:var(--teal);font-weight:700;}
+.prog-step.done .prog-step-bar{background:var(--mint);}
+/* Profile */
+.profile-grid{display:grid;grid-template-columns:220px 1fr;gap:20px;}
+.profile-sidebar{display:flex;flex-direction:column;gap:10px;}
+.profile-card-hero{background:linear-gradient(135deg,var(--navy),var(--teal));border-radius:12px;padding:20px 16px;text-align:center;}
+.profile-menu-item{background:#fff;border:1px solid var(--border);border-radius:10px;padding:11px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .15s;}
+.profile-menu-item:hover{border-color:var(--teal);background:var(--mintLt);}
+.cert-preview{background:linear-gradient(135deg,var(--navy),var(--teal));border-radius:14px;padding:22px 24px;display:flex;gap:20px;align-items:center;margin-bottom:14px;}
+/* Directory */
+.dir-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.dir-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;cursor:pointer;transition:box-shadow .15s;}
+.dir-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.1);}
+.dir-avatar{width:52px;height:52px;background:var(--bg);border:2px solid var(--border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 10px;}
+/* Resources */
+.res-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.res-card{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:box-shadow .15s;}
+.res-card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08);}
+.res-thumb{background:var(--bg);padding:20px;font-size:40px;text-align:center;border-bottom:1px solid var(--border);}
+.res-body{padding:14px;}
+
+/* ══════════════════════════════════════════════════════════════
+   4. MOBILE APP
+══════════════════════════════════════════════════════════════ */
+#app{background:#D8E4E8;padding:30px 24px;}
+#app .app-header{text-align:center;margin-bottom:24px;}
+#app .app-header h2{font-size:20px;font-weight:800;color:var(--navy);}
+#app .app-header p{font-size:12px;color:var(--mid);margin-top:4px;}
+#app .phones-row{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+.phone-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.phone-label{font-size:9px;font-weight:700;color:var(--mid);letter-spacing:.5px;text-align:center;}
+.phone-shell{width:200px;background:#0F1E30;border-radius:38px;padding:12px 9px 9px;box-shadow:0 20px 50px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.07);}
+.phone-notch{display:flex;justify-content:center;margin-bottom:7px;}
+.phone-notch-inner{width:90px;height:26px;background:#0F1E30;border-radius:15px;display:flex;align-items:center;justify-content:center;gap:6px;}
+.phone-camera{width:7px;height:7px;background:#222;border-radius:50%;}
+.phone-speaker{width:44px;height:5px;background:#222;border-radius:3px;}
+.phone-screen{background:var(--bg);border-radius:28px;overflow:hidden;height:520px;display:flex;flex-direction:column;}
+.phone-status{background:var(--navy);padding:5px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.phone-status-time{font-size:10px;color:rgba(255,255,255,.8);font-weight:600;}
+.phone-screen-inner{flex:1;overflow:hidden;}
+/* Phone screens */
+.ph-screen{display:none;height:100%;flex-direction:column;}
+.ph-screen.active{display:flex;}
+.ph-header-grad{background:linear-gradient(135deg,var(--navy),var(--teal));padding:14px 14px 18px;flex-shrink:0;}
+.ph-header-plain{background:var(--navy);padding:12px 14px 14px;flex-shrink:0;}
+.ph-body{flex:1;overflow-y:auto;padding:12px 13px;display:flex;flex-direction:column;gap:10px;background:var(--bg);}
+/* phone tab bar */
+.ph-tabbar{background:#fff;border-top:1px solid var(--border);display:flex;padding:7px 0 4px;flex-shrink:0;}
+.ph-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;}
+.ph-tab-icon{font-size:17px;}
+.ph-tab-label{font-size:8px;color:var(--lt);}
+.ph-tab.active .ph-tab-label{color:var(--teal);font-weight:700;}
+.ph-tab-dot{width:18px;height:2.5px;background:var(--teal);border-radius:1.5px;}
+/* phone shared */
+.ph-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:11px 12px;}
+.ph-card-title{font-size:10px;font-weight:700;color:var(--text);margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid var(--border);}
+.ph-quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.ph-quick-btn{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:all .15s;}
+.ph-quick-btn:hover{border-color:var(--teal);background:var(--mintLt);}
+.ph-quick-icon{font-size:22px;}
+.ph-quick-lbl{font-size:9px;font-weight:600;color:var(--text);}
+.ph-notif{background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 10px;}
+.ph-btn{width:100%;border:none;border-radius:8px;padding:11px;font-size:11px;font-weight:700;cursor:pointer;transition:opacity .15s;}
+.ph-btn:hover{opacity:.85;}
+.ph-member-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:11px 13px;}
+.ph-home-indicator{display:flex;justify-content:center;margin-top:7px;}
+.ph-home-bar{width:90px;height:4px;background:rgba(255,255,255,.28);border-radius:2px;}
+</style>
+</head>
+<body>
+
+<!-- TOP CHROME -->
+<div id="chrome">
+  <div class="logo">
+    <div class="logo-icon">🏥</div>
+    <div>
+      <div class="logo-name">KAHA Digital Platform</div>
+      <div class="logo-sub">INTERACTIVE PROTOTYPE · NEMITECH SOLUTIONS</div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showSection('website')">🌍 Public Website</button>
+    <button class="tab" onclick="showSection('dashboard')">📊 Admin Dashboard</button>
+    <button class="tab" onclick="showSection('portal')">👤 Member Portal</button>
+    <button class="tab" onclick="showSection('app')">📱 Mobile App</button>
+  </div>
+  <div class="badge">April 2026 · v1.0</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     1. PUBLIC WEBSITE
+══════════════════════════════════════════════════════════════ -->
+<div id="website" class="section active">
+  <!-- Site Nav -->
+  <nav class="site-nav">
+    <div class="sn-logo">
+      <div class="sn-icon">🏥</div>
+      <div>
+        <div style="font-size:12px;font-weight:700;color:#fff;">KAHA</div>
+        <div style="font-size:7px;color:var(--mint);letter-spacing:.8px;">Kenya Association of Health Administrators</div>
+      </div>
+    </div>
+    <div class="sn-links">
+      <div class="sn-link active" onclick="showPage('ws','home',this)">Home</div>
+      <div class="sn-link" onclick="showPage('ws','about',this)">About KAHA</div>
+      <div class="sn-link" onclick="showPage('ws','membership',this)">Membership</div>
+      <div class="sn-link" onclick="showPage('ws','events',this)">Events</div>
+      <div class="sn-link" onclick="showPage('ws','publications',this)">Publications</div>
+      <div class="sn-link" onclick="showPage('ws','contact',this)">Contact Us</div>
+    </div>
+    <div class="sn-btns">
+      <button class="sn-btn" style="background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff;">Login</button>
+      <button class="sn-btn" style="background:var(--teal);color:#fff;border:none;" onclick="showPage('ws','membership',document.querySelector('.sn-link:nth-child(3)'))">Join KAHA</button>
+    </div>
+  </nav>
+
+  <!-- HOME -->
+  <div id="ws-home" class="page active">
+    <div class="hero-wrap">
+      <div class="hero-inner">
+        <div style="flex:1">
+          <div class="hero-badge">🏥 KENYA'S HEALTH ADMINISTRATION BODY</div>
+          <div class="hero-title">Advancing Health<br>Administration<br><span>Across Kenya</span></div>
+          <div class="hero-sub">KAHA is the professional home for health administrators, managers, and leaders driving excellence in Kenya's health systems.</div>
+          <div class="hero-btns">
+            <button class="btn btn-teal" onclick="showPage('ws','membership',document.querySelectorAll('.sn-link')[2])">Join KAHA Today →</button>
+            <button class="btn" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;" onclick="showPage('ws','about',document.querySelectorAll('.sn-link')[1])">Learn More</button>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-box"><div class="stat-val" style="color:var(--mint)">2,400+</div><div class="stat-lbl">Members Nationwide</div></div>
+          <div class="stat-box"><div class="stat-val" style="color:var(--amber)">15+</div><div class="stat-lbl">Years of Excellence</div></div>
+          <div class="stat-box"><div class="stat-val" style="color:var(--mint)">47</div><div class="stat-lbl">Counties Represented</div></div>
+          <div class="stat-box"><div class="stat-val" style="color:var(--amber)">Annual</div><div class="stat-lbl">Scientific Conference</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="features-bar">
+      <div class="features-inner">
+        <div class="feat-item"><span style="font-size:20px">🎓</span><div><div class="feat-t">CPD & Training</div><div class="feat-d">Accredited professional development</div></div></div>
+        <div class="feat-item"><span style="font-size:20px">🤝</span><div><div class="feat-t">Networking</div><div class="feat-d">Connect with 2,400+ health leaders</div></div></div>
+        <div class="feat-item"><span style="font-size:20px">📋</span><div><div class="feat-t">Advocacy</div><div class="feat-d">Policy representation nationally</div></div></div>
+        <div class="feat-item"><span style="font-size:20px">📄</span><div><div class="feat-t">Resources</div><div class="feat-d">Publications & research</div></div></div>
+      </div>
+    </div>
+    <div class="page-body" style="display:grid;grid-template-columns:2fr 1fr;gap:24px;">
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div style="font-size:16px;font-weight:700;color:var(--text)">Latest News & Announcements</div>
+          <span style="font-size:11px;color:var(--teal);cursor:pointer" onclick="showPage('ws','events',document.querySelectorAll('.sn-link')[3])">View all →</span>
+        </div>
+        <div class="news-card" onclick="showPage('ws','events',document.querySelectorAll('.sn-link')[3])"><div class="news-accent" style="background:var(--teal)"></div><div class="news-body"><div class="news-meta"><span class="badge-tag" style="background:var(--teal);color:#fff">Conference</span><span style="font-size:10px;color:var(--lt)">Apr 20, 2025</span></div><div class="news-title">9th Annual Scientific Conference 2025 — Registration Now Open</div><div class="news-excerpt">The 2025 conference will be held at KICC, Nairobi, 1–3 December. Early bird registration ends 30 September. Join over 800 health leaders.</div><span class="read-more">Read more →</span></div></div>
+        <div class="news-card"><div class="news-accent" style="background:var(--navy)"></div><div class="news-body"><div class="news-meta"><span class="badge-tag" style="background:var(--navy);color:#fff">Policy</span><span style="font-size:10px;color:var(--lt)">Apr 10, 2025</span></div><div class="news-title">New CPD Framework for Health Administrators Released</div><div class="news-excerpt">KAHA has published an updated CPD framework aligned to global best practices in health systems management and governance.</div><span class="read-more">Read more →</span></div></div>
+        <div class="news-card"><div class="news-accent" style="background:var(--amber)"></div><div class="news-body"><div class="news-meta"><span class="badge-tag" style="background:var(--amber);color:var(--navy)">Partnership</span><span style="font-size:10px;color:var(--lt)">Apr 02, 2025</span></div><div class="news-title">KAHA Partners with Ministry of Health on Digital Health Agenda</div><div class="news-excerpt">A new MoU signed with MoH to strengthen the role of health administrators in Kenya's digital health transformation programme.</div><span class="read-more">Read more →</span></div></div>
+      </div>
+      <div>
+        <div class="sidebar-widget">
+          <div class="widget-head">📅 Upcoming Events</div>
+          <div class="widget-body">
+            <div class="evt-row" onclick="showPage('ws','events',document.querySelectorAll('.sn-link')[3])"><div class="evt-date" style="background:var(--teal)"><div style="font-size:12px;font-weight:700;color:#fff;line-height:1">JUN</div><div style="font-size:10px;color:rgba(255,255,255,.8)">14</div></div><div><div class="evt-title" style="font-size:11px;font-weight:700;color:var(--text)">CPD Workshop</div><div style="font-size:9px;color:var(--mid)">📍 Nairobi CBD</div></div></div>
+            <div class="evt-row" onclick="showPage('ws','events',document.querySelectorAll('.sn-link')[3])"><div class="evt-date" style="background:var(--navy)"><div style="font-size:12px;font-weight:700;color:#fff;line-height:1">AUG</div><div style="font-size:10px;color:rgba(255,255,255,.8)">02</div></div><div><div class="evt-title" style="font-size:11px;font-weight:700;color:var(--text)">AGM 2025</div><div style="font-size:9px;color:var(--mid)">📍 Virtual · Zoom</div></div></div>
+            <div class="evt-row" style="margin-bottom:12px" onclick="showPage('ws','events',document.querySelectorAll('.sn-link')[3])"><div class="evt-date" style="background:var(--amber)"><div style="font-size:12px;font-weight:700;color:#fff;line-height:1">DEC</div><div style="font-size:10px;color:rgba(255,255,255,.9)">01</div></div><div><div class="evt-title" style="font-size:11px;font-weight:700;color:var(--text)">Annual Conference</div><div style="font-size:9px;color:var(--mid)">📍 KICC, Nairobi</div></div></div>
+            <button class="btn btn-outline btn-sm" style="width:100%" onclick="showPage('ws','events',document.querySelectorAll('.sn-link')[3])">View all events →</button>
+          </div>
+        </div>
+        <div class="cta-box">
+          <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:6px">Ready to Join KAHA?</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.7);margin-bottom:14px;line-height:1.6">Join 2,400+ health administrators. Apply online in minutes.</div>
+          <button class="btn" style="width:100%;background:#fff;color:var(--teal);font-weight:700" onclick="showPage('ws','membership',document.querySelectorAll('.sn-link')[2])">Apply for Membership →</button>
+        </div>
+        <div class="sidebar-widget">
+          <div class="widget-body">
+            <div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:10px">🔗 Quick Links</div>
+            <div style="font-size:11px;color:var(--teal);padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="showSection('portal');showPortalPage('profile')">CPD Records & Certificates</div>
+            <div style="font-size:11px;color:var(--teal);padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="showSection('portal');showPortalPage('directory')">Member Directory</div>
+            <div style="font-size:11px;color:var(--teal);padding:6px 0;border-bottom:1px solid var(--border);cursor:pointer" onclick="showSection('portal');showPortalPage('resources')">Policy Documents</div>
+            <div style="font-size:11px;color:var(--teal);padding:6px 0;cursor:pointer" onclick="showSection('portal');showPortalPage('resources')">Research Publications</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px"><div style="width:28px;height:28px;background:var(--teal);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px">🏥</div><div style="font-size:12px;font-weight:700;color:#fff">Kenya Association of Health Administrators</div></div>
+          <div style="font-size:11px;color:rgba(255,255,255,.45);line-height:1.7">Advancing health administration excellence<br>across Kenya since 2010.</div>
+          <div class="social-pills"><div class="social-pill">LinkedIn</div><div class="social-pill">Twitter/X</div><div class="social-pill">Facebook</div></div>
+        </div>
+        <div class="footer-col"><div class="footer-title">Quick Links</div><div class="footer-link" onclick="showPage('ws','about',document.querySelectorAll('.sn-link')[1])">About KAHA</div><div class="footer-link" onclick="showPage('ws','membership',document.querySelectorAll('.sn-link')[2])">Membership</div><div class="footer-link" onclick="showPage('ws','events',document.querySelectorAll('.sn-link')[3])">Events</div><div class="footer-link" onclick="showPage('ws','publications',document.querySelectorAll('.sn-link')[4])">Publications</div></div>
+        <div class="footer-col"><div class="footer-title">Contact</div><div class="footer-link">secretariat@kaha.or.ke</div><div class="footer-link">+254 XX XXX XXXX</div><div class="footer-link">Nairobi, Kenya</div><div class="footer-link">Mon–Fri 8am–5pm</div></div>
+      </div>
+      <div class="footer-copy">© 2025 Kenya Association of Health Administrators · All rights reserved · Powered by Nemitech Solutions</div>
+    </footer>
+  </div>
+
+  <!-- ABOUT -->
+  <div id="ws-about" class="page">
+    <div class="page-hdr"><div class="page-hdr-inner"><div class="page-breadcrumb">Home / About KAHA</div><div class="page-hdr-title">About KAHA</div><div class="page-hdr-sub">Our mission, vision, history and leadership</div></div></div>
+    <div class="page-body">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px">
+        <div class="card" style="border-top:4px solid var(--teal)"><div style="font-size:22px;margin-bottom:8px">🎯</div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">Our Mission</div><div style="font-size:11px;color:var(--mid);line-height:1.7">To promote excellence in health administration and management through professional development, advocacy, and networking among health administrators in Kenya.</div></div>
+        <div class="card" style="border-top:4px solid var(--navy)"><div style="font-size:22px;margin-bottom:8px">🌟</div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">Our Vision</div><div style="font-size:11px;color:var(--mid);line-height:1.7">To be the leading professional association driving quality health administration and contributing to an effective and equitable health system in Kenya.</div></div>
+        <div class="card" style="border-top:4px solid var(--amber)"><div style="font-size:22px;margin-bottom:8px">📋</div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px">Our Values</div><div style="font-size:11px;color:var(--mid);line-height:1.7">Professionalism · Integrity · Collaboration · Excellence · Innovation · Equity</div></div>
+      </div>
+      <div class="card" style="margin-bottom:24px">
+        <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px">Our History</div>
+        <div style="display:flex;gap:0;position:relative">
+          <div style="position:absolute;top:14px;left:14px;right:14px;height:2px;background:var(--border)"></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:1" onclick=""><div style="width:28px;height:28px;background:var(--teal);border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--teal)"></div><div style="font-size:11px;font-weight:700;color:var(--teal)">2010</div><div style="font-size:9px;color:var(--mid);text-align:center">Founded</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:1"><div style="width:28px;height:28px;background:var(--navy);border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--navy)"></div><div style="font-size:11px;font-weight:700;color:var(--navy)">2014</div><div style="font-size:9px;color:var(--mid);text-align:center">Gazette Notice</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:1"><div style="width:28px;height:28px;background:var(--amber);border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--amber)"></div><div style="font-size:11px;font-weight:700;color:var(--amber)">2018</div><div style="font-size:9px;color:var(--mid);text-align:center">1,000 Members</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:1"><div style="width:28px;height:28px;background:var(--teal);border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--teal)"></div><div style="font-size:11px;font-weight:700;color:var(--teal)">2022</div><div style="font-size:9px;color:var(--mid);text-align:center">Digital Shift</div></div>
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;position:relative;z-index:1"><div style="width:28px;height:28px;background:var(--mint);border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--mint)"></div><div style="font-size:11px;font-weight:700;color:var(--green)">2025</div><div style="font-size:9px;color:var(--mid);text-align:center">2,400+ Members</div></div>
+        </div>
+      </div>
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px">National Leadership</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+        <div class="dir-card"><div class="dir-avatar">🏥</div><div style="font-size:10px;color:var(--teal);font-weight:700;margin-bottom:2px">National Chairperson</div><div style="font-size:12px;font-weight:700;color:var(--text)">KAHA Official</div></div>
+        <div class="dir-card"><div class="dir-avatar">🏥</div><div style="font-size:10px;color:var(--teal);font-weight:700;margin-bottom:2px">Vice Chairperson</div><div style="font-size:12px;font-weight:700;color:var(--text)">KAHA Official</div></div>
+        <div class="dir-card"><div class="dir-avatar">🏥</div><div style="font-size:10px;color:var(--teal);font-weight:700;margin-bottom:2px">Secretary General</div><div style="font-size:12px;font-weight:700;color:var(--text)">KAHA Official</div></div>
+        <div class="dir-card"><div class="dir-avatar">🏥</div><div style="font-size:10px;color:var(--teal);font-weight:700;margin-bottom:2px">National Treasurer</div><div style="font-size:12px;font-weight:700;color:var(--text)">KAHA Official</div></div>
+      </div>
+    </div>
+    <footer class="site-footer"><div class="footer-copy">© 2025 Kenya Association of Health Administrators · Powered by Nemitech Solutions</div></footer>
+  </div>
+
+  <!-- MEMBERSHIP -->
+  <div id="ws-membership" class="page">
+    <div class="page-hdr"><div class="page-hdr-inner"><div class="page-breadcrumb">Home / Membership</div><div class="page-hdr-title">Join KAHA</div><div class="page-hdr-sub">Choose a membership category and apply online</div></div></div>
+    <div class="page-body">
+      <div class="mem-grid" style="margin-bottom:24px">
+        <div class="mem-card" onclick="showSection('portal')"><div style="height:4px;background:var(--teal)"></div><div class="mem-body"><div style="font-size:22px;margin-bottom:7px">👤</div><div style="font-size:14px;font-weight:700;color:var(--text)">Individual</div><div class="mem-price"><span class="mem-price-val" style="color:var(--teal)">KES 5,000</span><span class="mem-price-freq"> / year</span></div><div class="mem-benefit"><span>✓</span>Full voting rights</div><div class="mem-benefit"><span>✓</span>CPD access</div><div class="mem-benefit"><span>✓</span>Member directory</div><div class="mem-benefit"><span>✓</span>Digital certificate</div><div class="mem-benefit"><span>✓</span>Conference discounts</div><button class="btn btn-outline" style="width:100%;margin-top:12px">Apply Now →</button></div></div>
+        <div class="mem-card featured" onclick="showSection('portal')"><div class="mem-banner">MOST POPULAR</div><div class="mem-body"><div style="font-size:22px;margin-bottom:7px">🏢</div><div style="font-size:14px;font-weight:700;color:var(--text)">Corporate</div><div class="mem-price"><span class="mem-price-val" style="color:var(--navy)">KES 20,000</span><span class="mem-price-freq"> / year</span></div><div class="mem-benefit"><span>✓</span>Up to 5 staff</div><div class="mem-benefit"><span>✓</span>Corporate listing</div><div class="mem-benefit"><span>✓</span>Priority event access</div><div class="mem-benefit"><span>✓</span>Branded recognition</div><div class="mem-benefit"><span>✓</span>Annual report feature</div><button class="btn btn-teal" style="width:100%;margin-top:12px">Apply Now →</button></div></div>
+        <div class="mem-card" onclick="showSection('portal')"><div style="height:4px;background:var(--amber)"></div><div class="mem-body"><div style="font-size:22px;margin-bottom:7px">⭐</div><div style="font-size:14px;font-weight:700;color:var(--text)">Life</div><div class="mem-price"><span class="mem-price-val" style="color:var(--amber)">KES 100,000</span><span class="mem-price-freq"> one-time</span></div><div class="mem-benefit"><span>✓</span>Permanent membership</div><div class="mem-benefit"><span>✓</span>All Individual benefits</div><div class="mem-benefit"><span>✓</span>Lifetime certificate</div><div class="mem-benefit"><span>✓</span>Legacy recognition</div><div class="mem-benefit"><span>✓</span>Free annual conference</div><button class="btn btn-outline" style="width:100%;margin-top:12px;border-color:var(--amber);color:var(--amber)">Apply Now →</button></div></div>
+        <div class="mem-card" onclick="showSection('portal')"><div style="height:4px;background:var(--teal)"></div><div class="mem-body"><div style="font-size:22px;margin-bottom:7px">🎓</div><div style="font-size:14px;font-weight:700;color:var(--text)">Student</div><div class="mem-price"><span class="mem-price-val" style="color:var(--teal)">KES 1,000</span><span class="mem-price-freq"> / year</span></div><div class="mem-benefit"><span>✓</span>Student rate</div><div class="mem-benefit"><span>✓</span>CPD access</div><div class="mem-benefit"><span>✓</span>Networking events</div><div class="mem-benefit"><span>✓</span>Career mentorship</div><div class="mem-benefit"><span>✓</span>Job board access</div><button class="btn btn-outline" style="width:100%;margin-top:12px">Apply Now →</button></div></div>
+      </div>
+      <div style="background:var(--navy);border-radius:14px;padding:24px;display:flex;gap:20px;align-items:center">
+        <div style="flex:1"><div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:7px">Pay via M-Pesa — Fast, Simple, Secure</div><div style="font-size:11px;color:rgba(255,255,255,.65);line-height:1.7">All membership fees are payable online via M-Pesa STK Push or Visa/Mastercard. You'll receive an automated receipt and your digital certificate upon approval.</div></div>
+        <div style="display:flex;gap:10px;flex-shrink:0">
+          <div style="background:#00A850;border-radius:10px;padding:12px 18px;text-align:center"><div style="font-size:22px">📱</div><div style="font-size:10px;color:#fff;font-weight:700;margin-top:4px">M-Pesa</div></div>
+          <div style="background:#1A56DB;border-radius:10px;padding:12px 18px;text-align:center"><div style="font-size:22px">💳</div><div style="font-size:10px;color:#fff;font-weight:700;margin-top:4px">Card</div></div>
+        </div>
+      </div>
+    </div>
+    <footer class="site-footer"><div class="footer-copy">© 2025 Kenya Association of Health Administrators · Powered by Nemitech Solutions</div></footer>
+  </div>
+
+  <!-- EVENTS -->
+  <div id="ws-events" class="page">
+    <div class="page-hdr"><div class="page-hdr-inner"><div class="page-breadcrumb">Home / Events</div><div class="page-hdr-title">Events & CPD</div><div class="page-hdr-sub">Conferences, workshops, and professional development opportunities</div></div></div>
+    <div class="page-body">
+      <div class="filter-bar" id="evtFilter">
+        <div class="filter-pill active" onclick="filterEvt(this,'All')">All</div>
+        <div class="filter-pill" onclick="filterEvt(this,'Conference')">Conference</div>
+        <div class="filter-pill" onclick="filterEvt(this,'CPD')">CPD</div>
+        <div class="filter-pill" onclick="filterEvt(this,'Workshop')">Workshop</div>
+        <div class="filter-pill" onclick="filterEvt(this,'AGM')">AGM</div>
+      </div>
+      <div class="event-card" data-tag="CPD"><div class="event-date-col" style="background:var(--teal)"><div style="font-size:18px;font-weight:800;color:#fff;line-height:1">JUN</div><div style="font-size:14px;color:rgba(255,255,255,.8)">14</div></div><div class="event-body"><div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><span class="badge-tag" style="background:var(--mintLt);color:var(--teal)">CPD</span><span style="font-size:10px;color:var(--lt)">📍 Nairobi CBD · In-Person</span></div><div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px">CPD Workshop — Health Systems Leadership</div><div style="font-size:11px;color:var(--mid);line-height:1.6;margin-bottom:8px">An accredited CPD workshop covering health systems leadership, governance, and accountability frameworks for health administrators.</div><div style="font-size:11px;font-weight:600;color:var(--teal)">💰 KES 3,500 (Members) · KES 5,000 (Non-members)</div><div style="margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--mid);margin-bottom:4px"><span>Registrations: 87 / 150</span><span style="color:var(--teal);font-weight:700">58%</span></div><div class="progress-bar"><div class="progress-fill" style="width:58%;background:var(--teal)"></div></div></div></div><div class="event-info"><button class="btn btn-teal btn-sm">Register →</button><button class="btn btn-outline btn-sm">Details</button></div></div>
+      <div class="event-card" data-tag="AGM"><div class="event-date-col" style="background:var(--navy)"><div style="font-size:18px;font-weight:800;color:#fff;line-height:1">AUG</div><div style="font-size:14px;color:rgba(255,255,255,.8)">02</div></div><div class="event-body"><div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><span class="badge-tag" style="background:var(--blueLt,#EFF4FF);color:#2563EB">AGM</span><span style="font-size:10px;color:var(--lt)">📍 Virtual · Zoom Link Provided</span></div><div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px">Annual General Meeting 2025</div><div style="font-size:11px;color:var(--mid);line-height:1.6;margin-bottom:8px">The Annual General Meeting for all KAHA members. Annual reports, elections, and key resolutions for 2025/2026.</div><div style="font-size:11px;font-weight:600;color:var(--teal)">💰 Free for all members</div><div style="margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--mid);margin-bottom:4px"><span>Registrations: 312 / 500</span><span style="color:var(--navy);font-weight:700">62%</span></div><div class="progress-bar"><div class="progress-fill" style="width:62%;background:var(--navy)"></div></div></div></div><div class="event-info"><button class="btn btn-navy btn-sm">Register →</button><button class="btn btn-outline btn-sm">Details</button></div></div>
+      <div class="event-card" data-tag="Conference"><div class="event-date-col" style="background:var(--amber)"><div style="font-size:18px;font-weight:800;color:#fff;line-height:1">DEC</div><div style="font-size:14px;color:rgba(255,255,255,.9)">01</div></div><div class="event-body"><div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><span class="badge-tag" style="background:var(--amberLt);color:var(--amber)">Conference</span><span style="font-size:10px;color:var(--lt)">📍 KICC, Nairobi · 3 Days</span></div><div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px">9th Annual Scientific Conference 2025</div><div style="font-size:11px;color:var(--mid);line-height:1.6;margin-bottom:8px">KAHA's flagship annual event bringing together health administrators, policymakers, and practitioners from across Kenya and the East African region.</div><div style="font-size:11px;font-weight:600;color:var(--teal)">💰 KES 8,500 (Members) · KES 12,000 (Non-members)</div><div style="margin-top:8px"><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--mid);margin-bottom:4px"><span>Registrations: 455 / 800</span><span style="color:var(--amber);font-weight:700">57%</span></div><div class="progress-bar"><div class="progress-fill" style="width:57%;background:var(--amber)"></div></div></div></div><div class="event-info"><button class="btn btn-sm" style="background:var(--amber);color:#fff">Register →</button><button class="btn btn-outline btn-sm">Details</button></div></div>
+    </div>
+    <footer class="site-footer"><div class="footer-copy">© 2025 Kenya Association of Health Administrators · Powered by Nemitech Solutions</div></footer>
+  </div>
+
+  <!-- PUBLICATIONS -->
+  <div id="ws-publications" class="page">
+    <div class="page-hdr"><div class="page-hdr-inner"><div class="page-breadcrumb">Home / Publications</div><div class="page-hdr-title">Publications & Resources</div><div class="page-hdr-sub">Research, policy briefs, CPD materials and conference proceedings</div></div></div>
+    <div class="page-body">
+      <div class="filter-bar">
+        <div class="filter-pill active" onclick="this.closest('.filter-bar').querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">All</div>
+        <div class="filter-pill" onclick="this.closest('.filter-bar').querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">Policy Briefs</div>
+        <div class="filter-pill" onclick="this.closest('.filter-bar').querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">CPD Materials</div>
+        <div class="filter-pill" onclick="this.closest('.filter-bar').querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">Research</div>
+        <div class="filter-pill" onclick="this.closest('.filter-bar').querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">Conference Papers</div>
+      </div>
+      <div class="pub-grid">
+        <div class="pub-card"><div class="pub-thumb">📄</div><div class="pub-body"><span class="badge-tag" style="background:var(--mintLt);color:var(--teal);margin-bottom:6px;display:inline-block">Policy Briefs</span><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4">Digital Health Policy Brief 2025</div><div style="font-size:10px;color:var(--lt);margin-bottom:10px">Apr 2025 · PDF · 2.4MB</div><button class="btn btn-teal btn-sm" style="width:100%">⬇ Download</button></div></div>
+        <div class="pub-card"><div class="pub-thumb">📊</div><div class="pub-body"><span class="badge-tag" style="background:var(--mintLt);color:var(--teal);margin-bottom:6px;display:inline-block">CPD Materials</span><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4">Health Systems Leadership — CPD Module 3</div><div style="font-size:10px;color:var(--lt);margin-bottom:10px">Mar 2025 · PDF · 5.1MB</div><button class="btn btn-teal btn-sm" style="width:100%">⬇ Download</button></div></div>
+        <div class="pub-card"><div class="pub-thumb">🔬</div><div class="pub-body"><span class="badge-tag" style="background:var(--mintLt);color:var(--teal);margin-bottom:6px;display:inline-block">Research</span><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4">Health Administration Research Journal Vol. 12</div><div style="font-size:10px;color:var(--lt);margin-bottom:10px">Feb 2025 · PDF · 8.2MB</div><button class="btn btn-teal btn-sm" style="width:100%">⬇ Download</button></div></div>
+        <div class="pub-card"><div class="pub-thumb">🎤</div><div class="pub-body"><span class="badge-tag" style="background:var(--mintLt);color:var(--teal);margin-bottom:6px;display:inline-block">Conference Papers</span><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4">8th Annual Conference Proceedings</div><div style="font-size:10px;color:var(--lt);margin-bottom:10px">Dec 2024 · PDF · 12MB</div><button class="btn btn-teal btn-sm" style="width:100%">⬇ Download</button></div></div>
+        <div class="pub-card"><div class="pub-thumb">📰</div><div class="pub-body"><span class="badge-tag" style="background:var(--mintLt);color:var(--teal);margin-bottom:6px;display:inline-block">Newsletters</span><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4">KAHA Newsletter — Q1 2025</div><div style="font-size:10px;color:var(--lt);margin-bottom:10px">Jan 2025 · PDF · 1.8MB</div><button class="btn btn-teal btn-sm" style="width:100%">⬇ Download</button></div></div>
+        <div class="pub-card"><div class="pub-thumb">📋</div><div class="pub-body"><span class="badge-tag" style="background:var(--mintLt);color:var(--teal);margin-bottom:6px;display:inline-block">Policy Briefs</span><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4">Health Admin Competency Framework</div><div style="font-size:10px;color:var(--lt);margin-bottom:10px">Nov 2024 · PDF · 3.5MB</div><button class="btn btn-teal btn-sm" style="width:100%">⬇ Download</button></div></div>
+      </div>
+    </div>
+    <footer class="site-footer"><div class="footer-copy">© 2025 Kenya Association of Health Administrators · Powered by Nemitech Solutions</div></footer>
+  </div>
+
+  <!-- CONTACT -->
+  <div id="ws-contact" class="page">
+    <div class="page-hdr"><div class="page-hdr-inner"><div class="page-breadcrumb">Home / Contact Us</div><div class="page-hdr-title">Get in Touch</div><div class="page-hdr-sub">Reach the KAHA secretariat</div></div></div>
+    <div class="page-body">
+      <div class="contact-grid">
+        <div class="card">
+          <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px">Send us a Message</div>
+          <div class="form-grid">
+            <div class="field"><label>Full Name</label><input placeholder="Your full name"></div>
+            <div class="field"><label>Email Address</label><input placeholder="your@email.com"></div>
+            <div class="field"><label>Phone Number</label><input placeholder="+254 7XX XXX XXX"></div>
+            <div class="field"><label>Subject</label><input placeholder="How can we help?"></div>
+          </div>
+          <div class="field"><label>Message</label><textarea rows="4" placeholder="Type your message here..."></textarea></div>
+          <button class="btn btn-teal" onclick="alert('Message sent! The secretariat will respond within 2 business days.')">Send Message →</button>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="card" style="display:flex;gap:12px;align-items:center"><div style="width:40px;height:40px;background:var(--mintLt);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📧</div><div><div style="font-size:10px;color:var(--lt)">Email</div><div style="font-size:12px;font-weight:600;color:var(--text)">secretariat@kaha.or.ke</div></div></div>
+          <div class="card" style="display:flex;gap:12px;align-items:center"><div style="width:40px;height:40px;background:var(--mintLt);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📞</div><div><div style="font-size:10px;color:var(--lt)">Phone</div><div style="font-size:12px;font-weight:600;color:var(--text)">+254 XX XXX XXXX</div></div></div>
+          <div class="card" style="display:flex;gap:12px;align-items:center"><div style="width:40px;height:40px;background:var(--mintLt);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">📍</div><div><div style="font-size:10px;color:var(--lt)">Address</div><div style="font-size:12px;font-weight:600;color:var(--text)">Nairobi, Kenya</div></div></div>
+          <div class="card" style="display:flex;gap:12px;align-items:center"><div style="width:40px;height:40px;background:var(--mintLt);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0">🕐</div><div><div style="font-size:10px;color:var(--lt)">Office Hours</div><div style="font-size:12px;font-weight:600;color:var(--text)">Mon–Fri, 8am–5pm EAT</div></div></div>
+          <div style="background:var(--navy);border-radius:12px;padding:16px;text-align:center"><div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:8px">Follow KAHA</div><div class="social-pills" style="justify-content:center"><div class="social-pill">LinkedIn</div><div class="social-pill">Twitter/X</div><div class="social-pill">Facebook</div></div></div>
+        </div>
+      </div>
+    </div>
+    <footer class="site-footer"><div class="footer-copy">© 2025 Kenya Association of Health Administrators · Powered by Nemitech Solutions</div></footer>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     2. ADMIN DASHBOARD
+══════════════════════════════════════════════════════════════ -->
+<div id="dashboard" class="section">
+  <div class="db-sidebar">
+    <div class="db-logo">
+      <div style="width:32px;height:32px;background:var(--teal);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0">🏥</div>
+      <div><div style="font-size:11px;font-weight:700;color:#fff">KAHA Admin</div><div style="font-size:8px;color:var(--mint)">Management Portal</div></div>
+    </div>
+    <div class="db-nav">
+      <div class="db-item active" onclick="showDbPage('overview',this)"><div class="db-item-icon">📊</div><div class="db-item-label">Overview</div></div>
+      <div class="db-item" onclick="showDbPage('members',this)"><div class="db-item-icon">👥</div><div class="db-item-label">Members</div></div>
+      <div class="db-item" onclick="showDbPage('payments',this)"><div class="db-item-icon">💳</div><div class="db-item-label">Payments</div></div>
+      <div class="db-item" onclick="showDbPage('dbevents',this)"><div class="db-item-icon">📅</div><div class="db-item-label">Events</div></div>
+      <div class="db-item" onclick="showDbPage('comms',this)"><div class="db-item-icon">📢</div><div class="db-item-label">Comms</div></div>
+      <div class="db-item" onclick="showDbPage('reports',this)"><div class="db-item-icon">📄</div><div class="db-item-label">Reports</div></div>
+      <div class="db-item" onclick="showDbPage('settings',this)"><div class="db-item-icon">⚙️</div><div class="db-item-label">Settings</div></div>
+    </div>
+    <div class="db-user">
+      <div style="width:28px;height:28px;background:rgba(255,255,255,.1);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px">👤</div>
+      <div><div style="font-size:10px;font-weight:600;color:#fff">Super Admin</div><div style="font-size:8px;color:rgba(255,255,255,.4)">KAHA Secretariat</div></div>
+    </div>
+  </div>
+  <div class="db-main">
+    <div class="db-topbar">
+      <div id="dbPageTitle"><div style="font-size:16px;font-weight:700;color:var(--text)">📊 Overview</div><div style="font-size:10px;color:var(--lt)">Kenya Association of Health Administrators</div></div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input placeholder="🔍 Search members, payments..." style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 12px;font-size:11px;color:var(--text);width:200px">
+        <div style="position:relative;width:32px;height:32px;background:var(--bg);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer">🔔<div style="position:absolute;top:4px;right:4px;width:7px;height:7px;background:var(--red);border-radius:50%"></div></div>
+      </div>
+    </div>
+    <div class="db-content">
+      <!-- OVERVIEW -->
+      <div id="db-overview" class="db-page active">
+        <div class="kpi-grid">
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon" style="background:rgba(2,128,144,.12)">👥</div><div class="kpi-delta" style="color:var(--green)">▲ 8%</div></div><div class="kpi-val">2,412</div><div class="kpi-lbl">Total Members</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon" style="background:rgba(30,158,110,.12)">💰</div><div class="kpi-delta" style="color:var(--green)">▲ 12%</div></div><div class="kpi-val">KES 1.2M</div><div class="kpi-lbl">Revenue YTD</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon" style="background:rgba(244,162,97,.12)">⏳</div><div class="kpi-delta" style="color:var(--red)">▼ 5%</div></div><div class="kpi-val">48</div><div class="kpi-lbl">Pending Approvals</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon" style="background:rgba(226,76,76,.12)">🔄</div></div><div class="kpi-val">312</div><div class="kpi-lbl">Renewals Due</div></div>
+        </div>
+        <div class="charts-row">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:13px;font-weight:700;color:var(--text)">Monthly Revenue — KES (2025)</div><span class="badge-tag" style="background:var(--mintLt);color:var(--teal)">2025</span></div>
+            <div class="bars">
+              <div class="bar-col"><div class="bar-fill" style="height:45%;background:rgba(2,128,144,.35)"></div><div class="bar-month">J</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:62%;background:rgba(2,128,144,.35)"></div><div class="bar-month">F</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:38%;background:rgba(2,128,144,.35)"></div><div class="bar-month">M</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:75%;background:rgba(2,128,144,.35)"></div><div class="bar-month">A</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:55%;background:rgba(2,128,144,.35)"></div><div class="bar-month">M</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:88%;background:rgba(2,128,144,.35)"></div><div class="bar-month">J</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:70%;background:rgba(2,128,144,.35)"></div><div class="bar-month">J</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:82%;background:rgba(2,128,144,.35)"></div><div class="bar-month">A</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:50%;background:rgba(2,128,144,.35)"></div><div class="bar-month">S</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:91%;background:var(--teal)"></div><div class="bar-month">O</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:68%;background:rgba(2,128,144,.35)"></div><div class="bar-month">N</div></div>
+              <div class="bar-col"><div class="bar-fill" style="height:25%;background:var(--border)"></div><div class="bar-month">D</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px">Member Breakdown</div>
+            <div class="breakdown-row"><div class="breakdown-header"><span style="color:var(--mid)">Individual</span><span style="font-weight:700;color:var(--teal)">68%</span></div><div class="breakdown-track"><div class="breakdown-fill" style="width:68%;background:var(--teal)"></div></div></div>
+            <div class="breakdown-row"><div class="breakdown-header"><span style="color:var(--mid)">Life</span><span style="font-weight:700;color:var(--navy)">18%</span></div><div class="breakdown-track"><div class="breakdown-fill" style="width:18%;background:var(--navy)"></div></div></div>
+            <div class="breakdown-row"><div class="breakdown-header"><span style="color:var(--mid)">Corporate</span><span style="font-weight:700;color:var(--mint)">10%</span></div><div class="breakdown-track"><div class="breakdown-fill" style="width:10%;background:var(--mint)"></div></div></div>
+            <div class="breakdown-row"><div class="breakdown-header"><span style="color:var(--mid)">Student</span><span style="font-weight:700;color:var(--amber)">4%</span></div><div class="breakdown-track"><div class="breakdown-fill" style="width:4%;background:var(--amber)"></div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div style="font-size:13px;font-weight:700;color:var(--text)">Recent Applications — Pending Approval</div><button class="btn btn-teal btn-sm" onclick="showDbPage('members',document.querySelectorAll('.db-item')[1])">View all →</button></div>
+          <table class="db-table" style="width:100%">
+            <thead><tr><th>Member</th><th>ID</th><th>Category</th><th>County</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td><div class="member-cell"><div class="m-avatar">🏥</div><div><div style="font-size:12px;font-weight:600;color:var(--text)">Health Professional A</div><div style="font-size:9px;color:var(--lt)">admin@kaha.or.ke</div></div></div></td><td style="color:var(--teal);font-weight:600">KAHA/001</td><td style="color:var(--mid)">Individual</td><td style="color:var(--mid)">Nairobi</td><td style="color:var(--lt)">Today 09:14</td><td><span class="badge-tag" style="background:var(--amberLt);color:var(--amber)">⏳ Pending</span></td><td><div class="action-group"><button class="action-btn" style="background:var(--greenLt);color:var(--green);border:1px solid var(--green)" onclick="this.closest('tr').querySelector('.badge-tag').textContent='✅ Approved';this.closest('tr').querySelector('.badge-tag').style.background='var(--greenLt)';this.closest('tr').querySelector('.badge-tag').style.color='var(--green)';this.closest('.action-group').innerHTML='<span style=\'font-size:10px;color:var(--green)\'>✓ Approved</span>'">✓ Approve</button><button class="action-btn" style="background:var(--redLt);color:var(--red);border:1px solid var(--red)" onclick="this.closest('tr').remove()">✗ Reject</button></div></td></tr>
+              <tr><td><div class="member-cell"><div class="m-avatar">🏥</div><div><div style="font-size:12px;font-weight:600;color:var(--text)">Health Professional B</div><div style="font-size:9px;color:var(--lt)">member@hospital.ke</div></div></div></td><td style="color:var(--teal);font-weight:600">KAHA/LM/002</td><td style="color:var(--mid)">Life</td><td style="color:var(--mid)">Kisumu</td><td style="color:var(--lt)">Today 08:52</td><td><span class="badge-tag" style="background:var(--amberLt);color:var(--amber)">⏳ Pending</span></td><td><div class="action-group"><button class="action-btn" style="background:var(--greenLt);color:var(--green);border:1px solid var(--green)" onclick="this.closest('tr').querySelector('.badge-tag').textContent='✅ Approved';this.closest('.action-group').innerHTML='<span style=\'font-size:10px;color:var(--green)\'>✓ Approved</span>'">✓ Approve</button><button class="action-btn" style="background:var(--redLt);color:var(--red);border:1px solid var(--red)" onclick="this.closest('tr').remove()">✗ Reject</button></div></td></tr>
+              <tr><td><div class="member-cell"><div class="m-avatar">🏥</div><div><div style="font-size:12px;font-weight:600;color:var(--text)">Health Professional C</div><div style="font-size:9px;color:var(--lt)">student@strathmore.edu</div></div></div></td><td style="color:var(--teal);font-weight:600">KAHA/STU/003</td><td style="color:var(--mid)">Student</td><td style="color:var(--mid)">Nakuru</td><td style="color:var(--lt)">Yesterday</td><td><span class="badge-tag" style="background:var(--greenLt);color:var(--green)">✅ Active</span></td><td><div class="action-group"><button class="action-btn" style="background:#EFF4FF;color:#2563EB;border:1px solid #2563EB">View</button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- MEMBERS -->
+      <div id="db-members" class="db-page">
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <input placeholder="🔍 Search members by name, ID, county..." style="flex:1;background:#fff;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px">
+          <button class="btn btn-teal btn-sm">+ Add Member</button>
+          <button class="btn btn-outline btn-sm">⬇ Export</button>
+        </div>
+        <div style="display:flex;background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px">
+          <button style="flex:1;padding:10px;background:var(--teal);border:none;border-right:1px solid var(--border);font-size:11px;color:#fff;font-weight:700;cursor:pointer">⏳ Pending (48)</button>
+          <button style="flex:1;padding:10px;background:none;border:none;border-right:1px solid var(--border);font-size:11px;color:var(--mid);cursor:pointer" onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.style.cssText='flex:1;padding:10px;background:none;border:none;border-right:1px solid var(--border);font-size:11px;color:var(--mid);cursor:pointer');this.style.background='var(--teal)';this.style.color='#fff';this.style.fontWeight='700'">✅ Active (2,312)</button>
+          <button style="flex:1;padding:10px;background:none;border:none;font-size:11px;color:var(--mid);cursor:pointer" onclick="this.parentElement.querySelectorAll('button').forEach(b=>b.style.cssText='flex:1;padding:10px;background:none;border:none;font-size:11px;color:var(--mid);cursor:pointer');this.style.background='var(--teal)';this.style.color='#fff';this.style.fontWeight='700'">⚠️ Lapsed (52)</button>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table class="db-table" style="width:100%">
+            <thead><tr><th>Member</th><th>ID</th><th>Category</th><th>County</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td><div class="member-cell"><div class="m-avatar">🏥</div><div><div style="font-size:12px;font-weight:600;color:var(--text)">Health Professional A</div></div></div></td><td style="color:var(--teal);font-weight:600;font-size:11px">KAHA/001</td><td style="color:var(--mid);font-size:11px">Individual</td><td style="color:var(--mid);font-size:11px">Nairobi</td><td style="color:var(--lt);font-size:11px">Apr 2025</td><td><span class="badge-tag" style="background:var(--amberLt);color:var(--amber)">⏳ Pending</span></td><td><div class="action-group"><button class="action-btn" style="background:#EFF4FF;color:#2563EB;border:1px solid #2563EB">View</button><button class="action-btn" style="background:var(--greenLt);color:var(--green);border:1px solid var(--green)">Approve</button></div></td></tr>
+              <tr><td><div class="member-cell"><div class="m-avatar">🏥</div><div><div style="font-size:12px;font-weight:600;color:var(--text)">Health Professional B</div></div></div></td><td style="color:var(--teal);font-weight:600;font-size:11px">KAHA/LM/002</td><td style="color:var(--mid);font-size:11px">Life</td><td style="color:var(--mid);font-size:11px">Kisumu</td><td style="color:var(--lt);font-size:11px">Mar 2025</td><td><span class="badge-tag" style="background:var(--greenLt);color:var(--green)">✅ Active</span></td><td><div class="action-group"><button class="action-btn" style="background:#EFF4FF;color:#2563EB;border:1px solid #2563EB">View</button></div></td></tr>
+              <tr><td><div class="member-cell"><div class="m-avatar">🏥</div><div><div style="font-size:12px;font-weight:600;color:var(--text)">Health Professional C</div></div></div></td><td style="color:var(--teal);font-weight:600;font-size:11px">KAHA/STU/003</td><td style="color:var(--mid);font-size:11px">Student</td><td style="color:var(--mid);font-size:11px">Nakuru</td><td style="color:var(--lt);font-size:11px">Feb 2025</td><td><span class="badge-tag" style="background:var(--greenLt);color:var(--green)">✅ Active</span></td><td><div class="action-group"><button class="action-btn" style="background:#EFF4FF;color:#2563EB;border:1px solid #2563EB">View</button></div></td></tr>
+              <tr><td><div class="member-cell"><div class="m-avatar">🏥</div><div><div style="font-size:12px;font-weight:600;color:var(--text)">Health Professional D</div></div></div></td><td style="color:var(--teal);font-weight:600;font-size:11px">KAHA/004</td><td style="color:var(--mid);font-size:11px">Individual</td><td style="color:var(--mid);font-size:11px">Mombasa</td><td style="color:var(--lt);font-size:11px">Jan 2025</td><td><span class="badge-tag" style="background:var(--redLt);color:var(--red)">⚠️ Lapsed</span></td><td><div class="action-group"><button class="action-btn" style="background:#EFF4FF;color:#2563EB;border:1px solid #2563EB">View</button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- PAYMENTS -->
+      <div id="db-payments" class="db-page">
+        <div class="stat-row">
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon" style="background:rgba(30,158,110,.12)">💰</div><div class="kpi-delta" style="color:var(--green)">▲ 12%</div></div><div class="kpi-val">KES 1.2M</div><div class="kpi-lbl">Total Revenue YTD</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon" style="background:rgba(0,168,80,.12)">📱</div></div><div class="kpi-val">KES 890K</div><div class="kpi-lbl">Via M-Pesa</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon" style="background:rgba(37,99,235,.12)">💳</div></div><div class="kpi-val">KES 310K</div><div class="kpi-lbl">Via Card</div></div>
+          <div class="kpi-card"><div class="kpi-top"><div class="kpi-icon" style="background:rgba(244,162,97,.12)">⏳</div></div><div class="kpi-val">KES 45K</div><div class="kpi-lbl">Pending</div></div>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><div style="font-size:13px;font-weight:700;color:var(--text)">Recent Transactions</div><button class="btn btn-teal btn-sm">⬇ Export CSV</button></div>
+          <table class="db-table" style="width:100%">
+            <thead><tr><th>Reference</th><th>Member</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td style="color:var(--teal);font-weight:600;font-size:11px">KAHA-2025-00412</td><td style="font-size:11px">Health Professional A</td><td style="font-size:12px;font-weight:700">KES 5,050</td><td style="font-size:11px">M-Pesa 📱</td><td style="font-size:11px;color:var(--lt)">24 Apr 2025</td><td><span class="badge-tag" style="background:var(--greenLt);color:var(--green)">✅ Confirmed</span></td></tr>
+              <tr><td style="color:var(--teal);font-weight:600;font-size:11px">KAHA-2025-00411</td><td style="font-size:11px">Health Professional B</td><td style="font-size:12px;font-weight:700">KES 100,050</td><td style="font-size:11px">M-Pesa 📱</td><td style="font-size:11px;color:var(--lt)">23 Apr 2025</td><td><span class="badge-tag" style="background:var(--greenLt);color:var(--green)">✅ Confirmed</span></td></tr>
+              <tr><td style="color:var(--teal);font-weight:600;font-size:11px">KAHA-2025-00410</td><td style="font-size:11px">Health Professional C</td><td style="font-size:12px;font-weight:700">KES 1,050</td><td style="font-size:11px">Card 💳</td><td style="font-size:11px;color:var(--lt)">22 Apr 2025</td><td><span class="badge-tag" style="background:var(--greenLt);color:var(--green)">✅ Confirmed</span></td></tr>
+              <tr><td style="color:var(--teal);font-weight:600;font-size:11px">KAHA-2025-00409</td><td style="font-size:11px">Health Professional D</td><td style="font-size:12px;font-weight:700">KES 5,050</td><td style="font-size:11px">M-Pesa 📱</td><td style="font-size:11px;color:var(--lt)">21 Apr 2025</td><td><span class="badge-tag" style="background:var(--amberLt);color:var(--amber)">⏳ Pending</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- EVENTS -->
+      <div id="db-dbevents" class="db-page">
+        <div style="display:flex;justify-content:flex-end;margin-bottom:14px"><button class="btn btn-teal">+ Create Event</button></div>
+        <div class="event-prog-card"><div style="flex:1"><div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">CPD Workshop — Health Systems Leadership</div><div style="font-size:11px;color:var(--mid);margin-bottom:10px">📅 Jun 14, 2025 · 📍 Nairobi CBD · In-Person</div><div style="margin-bottom:4px;display:flex;justify-content:space-between;font-size:10px;color:var(--mid)"><span>Registrations: 87 / 150</span><span style="color:var(--teal);font-weight:700">58%</span></div><div class="progress-bar"><div class="progress-fill" style="width:58%;background:var(--teal)"></div></div></div><div style="display:flex;gap:7px"><button class="btn btn-outline btn-sm">Edit</button><button class="btn btn-sm" style="background:var(--bg);border:1px solid var(--border);color:var(--mid)">View List</button></div></div>
+        <div class="event-prog-card"><div style="flex:1"><div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">Annual General Meeting 2025</div><div style="font-size:11px;color:var(--mid);margin-bottom:10px">📅 Aug 02, 2025 · 📍 Virtual · Zoom</div><div style="margin-bottom:4px;display:flex;justify-content:space-between;font-size:10px;color:var(--mid)"><span>Registrations: 312 / 500</span><span style="color:var(--navy);font-weight:700">62%</span></div><div class="progress-bar"><div class="progress-fill" style="width:62%;background:var(--navy)"></div></div></div><div style="display:flex;gap:7px"><button class="btn btn-outline btn-sm">Edit</button><button class="btn btn-sm" style="background:var(--bg);border:1px solid var(--border);color:var(--mid)">View List</button></div></div>
+        <div class="event-prog-card"><div style="flex:1"><div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">9th Annual Scientific Conference 2025</div><div style="font-size:11px;color:var(--mid);margin-bottom:10px">📅 Dec 01–03, 2025 · 📍 KICC, Nairobi · 3 Days</div><div style="margin-bottom:4px;display:flex;justify-content:space-between;font-size:10px;color:var(--mid)"><span>Registrations: 455 / 800</span><span style="color:var(--amber);font-weight:700">57%</span></div><div class="progress-bar"><div class="progress-fill" style="width:57%;background:var(--amber)"></div></div></div><div style="display:flex;gap:7px"><button class="btn btn-sm" style="background:var(--amber);color:#fff;border:none">Edit</button><button class="btn btn-sm" style="background:var(--bg);border:1px solid var(--border);color:var(--mid)">View List</button></div></div>
+      </div>
+      <!-- COMMS -->
+      <div id="db-comms" class="db-page">
+        <div class="card" style="margin-bottom:14px">
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">📢 Broadcast Message to Members</div>
+          <div class="group-pills">
+            <div class="group-pill active" onclick="this.closest('.group-pills').querySelectorAll('.group-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">📧 All Members</div>
+            <div class="group-pill" onclick="this.closest('.group-pills').querySelectorAll('.group-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">🔄 Renewals Due</div>
+            <div class="group-pill" onclick="this.closest('.group-pills').querySelectorAll('.group-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">⏳ Pending Applications</div>
+            <div class="group-pill" onclick="this.closest('.group-pills').querySelectorAll('.group-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">📅 Event Attendees</div>
+          </div>
+          <div class="field"><label>Subject</label><input placeholder="e.g. Conference Registration Reminder"></div>
+          <div class="field"><label>Message</label><textarea rows="4" placeholder="Type your message to members here..."></textarea></div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-navy" onclick="alert('Email broadcast sent to selected members!')">📧 Send Email</button>
+            <button class="btn btn-green" onclick="alert('SMS broadcast sent to selected members!')">📱 Send SMS</button>
+          </div>
+        </div>
+        <div class="card">
+          <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">Recent Broadcasts</div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)"><div><div style="font-size:12px;font-weight:600;color:var(--text)">Renewal Reminder</div><div style="font-size:10px;color:var(--mid)">To: All lapsing members</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:600;color:var(--green)">312 sent</div><div style="font-size:10px;color:var(--lt)">Apr 20</div></div></div>
+          <div style="display:flex;justify-content:space-between;padding:10px 0"><div><div style="font-size:12px;font-weight:600;color:var(--text)">Conference Registration Open</div><div style="font-size:10px;color:var(--mid)">To: All members</div></div><div style="text-align:right"><div style="font-size:11px;font-weight:600;color:var(--green)">2,412 sent</div><div style="font-size:10px;color:var(--lt)">Apr 15</div></div></div>
+        </div>
+      </div>
+      <!-- REPORTS -->
+      <div id="db-reports" class="db-page">
+        <div class="report-card" onclick="alert('Generating Membership Report...\nThis would download a CSV/PDF with all member data.')"><div><div style="font-size:13px;font-weight:700;color:var(--text)">📋 Membership Report</div><div style="font-size:11px;color:var(--mid);margin-top:3px">Full list of all members with status, category, county</div></div><button class="btn btn-teal btn-sm">Generate →</button></div>
+        <div class="report-card" onclick="alert('Generating Revenue Report...')"><div><div style="font-size:13px;font-weight:700;color:var(--text)">💰 Revenue Report</div><div style="font-size:11px;color:var(--mid);margin-top:3px">Payments by period, method, and category</div></div><button class="btn btn-teal btn-sm">Generate →</button></div>
+        <div class="report-card" onclick="alert('Generating Event Attendance Report...')"><div><div style="font-size:13px;font-weight:700;color:var(--text)">📅 Event Attendance Report</div><div style="font-size:11px;color:var(--mid);margin-top:3px">Registration and attendance per event</div></div><button class="btn btn-teal btn-sm">Generate →</button></div>
+        <div class="report-card" onclick="alert('Generating Renewal Report...')"><div><div style="font-size:13px;font-weight:700;color:var(--text)">🔄 Renewal Report</div><div style="font-size:11px;color:var(--mid);margin-top:3px">Members due for renewal within 30/60/90 days</div></div><button class="btn btn-teal btn-sm">Generate →</button></div>
+        <div class="report-card" onclick="alert('Generating CPD Report...')"><div><div style="font-size:13px;font-weight:700;color:var(--text)">📚 CPD Records Report</div><div style="font-size:11px;color:var(--mid);margin-top:3px">CPD hours logged per member and accreditation status</div></div><button class="btn btn-teal btn-sm">Generate →</button></div>
+      </div>
+      <!-- SETTINGS -->
+      <div id="db-settings" class="db-page">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="report-card"><div><div style="font-size:13px;font-weight:700;color:var(--text)">👤 Admin Users & Roles</div><div style="font-size:11px;color:var(--mid);margin-top:3px">Manage who has access to the dashboard and their permissions</div></div><button class="btn btn-outline btn-sm">Manage →</button></div>
+          <div class="report-card"><div><div style="font-size:13px;font-weight:700;color:var(--text)">💳 Payment Settings</div><div style="font-size:11px;color:var(--mid);margin-top:3px">M-Pesa Daraja credentials, Pesapal/Flutterwave API keys</div></div><button class="btn btn-outline btn-sm">Configure →</button></div>
+          <div class="report-card"><div><div style="font-size:13px;font-weight:700;color:var(--text)">📧 Email & SMS</div><div style="font-size:11px;color:var(--mid);margin-top:3px">SendGrid API key, SMS gateway configuration</div></div><button class="btn btn-outline btn-sm">Configure →</button></div>
+          <div class="report-card"><div><div style="font-size:13px;font-weight:700;color:var(--text)">🔒 Security</div><div style="font-size:11px;color:var(--mid);margin-top:3px">Two-factor authentication, password policy, session timeout</div></div><button class="btn btn-outline btn-sm">Configure →</button></div>
+          <div class="report-card"><div><div style="font-size:13px;font-weight:700;color:var(--text)">🌐 Website Settings</div><div style="font-size:11px;color:var(--mid);margin-top:3px">Domain, SEO metadata, social media links</div></div><button class="btn btn-outline btn-sm">Configure →</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     3. MEMBER PORTAL
+══════════════════════════════════════════════════════════════ -->
+<div id="portal" class="section">
+  <nav class="portal-nav">
+    <div style="display:flex;align-items:center;gap:9px;padding:11px 0;margin-right:20px;flex-shrink:0">
+      <div style="width:30px;height:30px;background:var(--teal);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px">🏥</div>
+      <div><div style="font-size:12px;font-weight:700;color:#fff">KAHA</div><div style="font-size:7px;color:var(--mint);letter-spacing:.8px">MEMBER PORTAL</div></div>
+    </div>
+    <div style="display:flex;flex:1">
+      <div style="padding:15px 13px;font-size:11px;color:rgba(255,255,255,.6);cursor:pointer" onclick="showSection('website')">Home</div>
+      <div style="padding:15px 13px;font-size:11px;color:rgba(255,255,255,.6);cursor:pointer" onclick="showSection('website');showPage('ws','events',document.querySelectorAll('.sn-link')[3])">Events</div>
+      <div style="padding:15px 13px;font-size:11px;color:rgba(255,255,255,.6);cursor:pointer" onclick="showSection('website');showPage('ws','publications',document.querySelectorAll('.sn-link')[4])">Publications</div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button style="padding:7px 14px;border-radius:6px;background:transparent;border:1px solid rgba(255,255,255,.3);color:#fff;font-size:11px;cursor:pointer">Login</button>
+      <button style="padding:7px 14px;border-radius:6px;background:var(--teal);border:none;color:#fff;font-size:11px;font-weight:700;cursor:pointer" onclick="showPortalPage('register')">Join KAHA</button>
+    </div>
+  </nav>
+  <div class="portal-subtabs">
+    <div class="portal-subtab active" id="ptab-register" onclick="showPortalPage('register')">📝 Register</div>
+    <div class="portal-subtab" id="ptab-profile" onclick="showPortalPage('profile')">🔑 My Profile</div>
+    <div class="portal-subtab" id="ptab-directory" onclick="showPortalPage('directory')">👥 Member Directory</div>
+    <div class="portal-subtab" id="ptab-resources" onclick="showPortalPage('resources')">📄 Resources</div>
+  </div>
+  <!-- REGISTER -->
+  <div id="portal-register" class="portal-page active">
+    <div class="portal-content">
+      <div class="reg-grid">
+        <div style="background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden">
+          <div style="background:linear-gradient(135deg,var(--navy),var(--teal));padding:16px 20px"><div style="font-size:16px;font-weight:700;color:#fff">New Membership Application</div><div style="font-size:11px;color:rgba(255,255,255,.65);margin-top:2px">Complete all sections to submit your application</div></div>
+          <div class="progress-steps">
+            <div class="prog-step active"><div class="prog-step-bar"></div><div class="prog-step-lbl">Personal Info</div></div>
+            <div class="prog-step"><div class="prog-step-bar"></div><div class="prog-step-lbl">Professional</div></div>
+            <div class="prog-step"><div class="prog-step-bar"></div><div class="prog-step-lbl">Docs</div></div>
+            <div class="prog-step"><div class="prog-step-bar"></div><div class="prog-step-lbl">Payment</div></div>
+          </div>
+          <div style="padding:16px 20px">
+            <div style="font-size:11px;font-weight:600;color:var(--text);margin-bottom:8px">Membership Category</div>
+            <div class="cat-grid" style="margin-bottom:16px">
+              <div class="cat-item selected" onclick="this.closest('.cat-grid').querySelectorAll('.cat-item').forEach(c=>c.classList.remove('selected'));this.classList.add('selected')"><div class="cat-name">Individual</div><div class="cat-price">KES 5,000/yr</div></div>
+              <div class="cat-item" onclick="this.closest('.cat-grid').querySelectorAll('.cat-item').forEach(c=>c.classList.remove('selected'));this.classList.add('selected')"><div class="cat-name">Corporate</div><div class="cat-price">KES 20,000/yr</div></div>
+              <div class="cat-item" onclick="this.closest('.cat-grid').querySelectorAll('.cat-item').forEach(c=>c.classList.remove('selected'));this.classList.add('selected')"><div class="cat-name">Life</div><div class="cat-price">KES 100,000</div></div>
+              <div class="cat-item" onclick="this.closest('.cat-grid').querySelectorAll('.cat-item').forEach(c=>c.classList.remove('selected'));this.classList.add('selected')"><div class="cat-name">Student</div><div class="cat-price">KES 1,000/yr</div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+              <div class="field"><label>First Name</label><input placeholder="e.g. Jane"></div>
+              <div class="field"><label>Last Name</label><input placeholder="e.g. Wanjiku"></div>
+              <div class="field"><label>Email Address</label><input placeholder="jane@hospital.go.ke" type="email"></div>
+              <div class="field"><label>Phone (M-Pesa)</label><input placeholder="+254 7XX XXX XXX"></div>
+              <div class="field"><label>Current Employer</label><input placeholder="Hospital / Ministry / NGO"></div>
+              <div class="field"><label>County</label><select><option value="">Select county</option><option>Nairobi</option><option>Mombasa</option><option>Kisumu</option><option>Nakuru</option><option>Eldoret</option></select></div>
+            </div>
+            <div class="upload-zone" onclick="alert('File browser would open here to select qualification documents (PDF, JPG, PNG)')">
+              <div style="font-size:24px;margin-bottom:6px">⬆</div>
+              <div style="font-size:11px;font-weight:600;color:var(--teal)">Drag & drop qualification documents or click to browse</div>
+              <div style="font-size:9px;color:var(--mid);margin-top:3px">PDF, JPG, PNG · Max 5MB per file</div>
+            </div>
+            <button class="btn btn-teal" style="width:100%" onclick="alert('Proceeding to payment...\nYou will be redirected to M-Pesa or card payment.')">Continue to Payment →</button>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="card" style="background:var(--navy);border-color:var(--navy)"><div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:10px">Why Join KAHA?</div><div class="mem-benefit" style="color:rgba(255,255,255,.75)"><span style="color:var(--mint)">✓</span>Professional recognition & certification</div><div class="mem-benefit" style="color:rgba(255,255,255,.75)"><span style="color:var(--mint)">✓</span>CPD and accredited training</div><div class="mem-benefit" style="color:rgba(255,255,255,.75)"><span style="color:var(--mint)">✓</span>Policy advocacy representation</div><div class="mem-benefit" style="color:rgba(255,255,255,.75)"><span style="color:var(--mint)">✓</span>Network with 2,400+ peers</div><div class="mem-benefit" style="color:rgba(255,255,255,.75)"><span style="color:var(--mint)">✓</span>Publications & research access</div></div>
+          <div class="card" style="border-left:4px solid var(--amber);background:var(--amberLt)"><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:4px">⏱ Quick Process</div><div style="font-size:10px;color:var(--mid);line-height:1.6">Applications reviewed within 3–5 business days. Email confirmation and digital certificate upon approval.</div></div>
+          <div class="card"><div style="font-size:11px;font-weight:700;color:var(--text);margin-bottom:6px">Need Help?</div><div style="font-size:10px;color:var(--mid);margin-bottom:7px">Our secretariat is here to assist.</div><div style="font-size:10px;color:var(--teal)">📧 secretariat@kaha.or.ke</div><div style="font-size:10px;color:var(--teal);margin-top:3px">📞 +254 XX XXX XXXX</div></div>
+          <div style="background:var(--navy);border-radius:12px;padding:16px;display:flex;gap:10px;align-items:center"><div style="flex:1"><div style="font-size:12px;font-weight:700;color:#fff;margin-bottom:5px">Pay via M-Pesa or Card</div><div style="font-size:10px;color:rgba(255,255,255,.6);line-height:1.6">Instant receipt & digital certificate on confirmation.</div></div><div style="display:flex;gap:7px;flex-shrink:0"><div style="background:#00A850;border-radius:8px;padding:10px 12px;text-align:center;cursor:pointer"><div style="font-size:18px">📱</div><div style="font-size:9px;color:#fff;font-weight:700;margin-top:3px">M-Pesa</div></div><div style="background:#1A56DB;border-radius:8px;padding:10px 12px;text-align:center;cursor:pointer"><div style="font-size:18px">💳</div><div style="font-size:9px;color:#fff;font-weight:700;margin-top:3px">Card</div></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- PROFILE -->
+  <div id="portal-profile" class="portal-page">
+    <div class="portal-content">
+      <div class="profile-grid">
+        <div class="profile-sidebar">
+          <div class="profile-card-hero">
+            <div style="width:60px;height:60px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 10px">🏥</div>
+            <div style="font-size:14px;font-weight:700;color:#fff">Health Professional</div>
+            <div style="font-size:10px;color:var(--mint);margin-top:3px">Life Member</div>
+            <div style="font-size:9px;color:rgba(255,255,255,.5);margin-top:2px">KAHA/LM/0042</div>
+            <div style="margin-top:10px"><span class="badge-tag" style="background:var(--mint);color:var(--navy)">✅ Active</span></div>
+          </div>
+          <div class="profile-menu-item"><span style="font-size:16px">👤</span><span style="font-size:11px;color:var(--text)">Personal Details</span><span style="margin-left:auto;color:var(--lt)">›</span></div>
+          <div class="profile-menu-item"><span style="font-size:16px">📜</span><span style="font-size:11px;color:var(--text)">My Certificate</span><span style="margin-left:auto;color:var(--lt)">›</span></div>
+          <div class="profile-menu-item"><span style="font-size:16px">📋</span><span style="font-size:11px;color:var(--text)">CPD Records</span><span style="margin-left:auto;color:var(--lt)">›</span></div>
+          <div class="profile-menu-item"><span style="font-size:16px">💳</span><span style="font-size:11px;color:var(--text)">Payment History</span><span style="margin-left:auto;color:var(--lt)">›</span></div>
+          <div class="profile-menu-item"><span style="font-size:16px">🔔</span><span style="font-size:11px;color:var(--text)">Notifications</span><span style="margin-left:auto;color:var(--lt)">›</span></div>
+          <div class="profile-menu-item"><span style="font-size:16px">🔒</span><span style="font-size:11px;color:var(--text)">Security</span><span style="margin-left:auto;color:var(--lt)">›</span></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;gap:10px">
+            <div class="kpi-card" style="flex:1"><div class="kpi-val" style="color:var(--teal)">2025</div><div class="kpi-lbl">Member Since</div></div>
+            <div class="kpi-card" style="flex:1"><div class="kpi-val" style="color:var(--green)">✓ Active</div><div class="kpi-lbl">Status</div></div>
+            <div class="kpi-card" style="flex:1"><div class="kpi-val" style="color:var(--amber)">3 hrs</div><div class="kpi-lbl">CPD Hours</div></div>
+          </div>
+          <div class="card">
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">📜 Digital Membership Certificate</div>
+            <div class="cert-preview">
+              <div style="flex:1">
+                <div style="font-size:9px;color:var(--mint);font-weight:600;letter-spacing:2px;margin-bottom:5px">CERTIFICATE OF MEMBERSHIP</div>
+                <div style="font-size:20px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:6px">Kenya Association of<br>Health Administrators</div>
+                <div style="height:1px;background:rgba(255,255,255,.2);margin:8px 0"></div>
+                <div style="font-size:11px;color:rgba(255,255,255,.65)">This certifies that <strong style="color:#fff">Health Professional</strong><br>is a verified Life Member in good standing</div>
+                <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:10px;color:rgba(255,255,255,.45)"><span>KAHA/LM/0042</span><span>Valid: December 2025</span></div>
+              </div>
+              <div style="font-size:36px">🏥</div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:12px">
+              <button class="btn btn-teal btn-sm" onclick="alert('Certificate PDF download would start here.')">⬇ Download PDF</button>
+              <button class="btn btn-outline btn-sm" onclick="alert('Share options: Email, WhatsApp, Link')">📤 Share</button>
+            </div>
+          </div>
+          <div class="card">
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:12px">💳 Payment History</div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+              <div style="width:36px;height:36px;background:var(--greenLt);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px">✅</div>
+              <div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--text)">Annual Membership Fee 2025</div><div style="font-size:10px;color:var(--mid)">KAHA-2025-00412 · M-Pesa · 24 Apr 2025</div></div>
+              <div style="font-size:13px;font-weight:700;color:var(--teal)">KES 5,050</div>
+              <button class="btn btn-sm" style="background:var(--bg);border:1px solid var(--border);color:var(--mid)">Receipt</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 0">
+              <div style="width:36px;height:36px;background:var(--greenLt);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px">✅</div>
+              <div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--text)">Annual Membership Fee 2024</div><div style="font-size:10px;color:var(--mid)">KAHA-2024-00201 · M-Pesa · 12 Jan 2024</div></div>
+              <div style="font-size:13px;font-weight:700;color:var(--teal)">KES 5,050</div>
+              <button class="btn btn-sm" style="background:var(--bg);border:1px solid var(--border);color:var(--mid)">Receipt</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- DIRECTORY -->
+  <div id="portal-directory" class="portal-page">
+    <div class="portal-content">
+      <div style="display:flex;gap:10px;margin-bottom:20px">
+        <input placeholder="🔍 Search members by name, county or specialisation..." style="flex:1;background:#fff;border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-size:12px">
+        <select style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-size:12px"><option>All Counties</option><option>Nairobi</option><option>Mombasa</option><option>Kisumu</option></select>
+        <select style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-size:12px"><option>All Categories</option><option>Individual</option><option>Life</option><option>Corporate</option><option>Student</option></select>
+      </div>
+      <div class="dir-grid">
+        <div class="dir-card"><div class="dir-avatar">🏥</div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">Health Administrator A</div><div style="font-size:10px;color:var(--mid);margin-bottom:8px">County Director, Nairobi</div><span class="badge-tag" style="background:var(--mintLt);color:var(--teal)">Life Member</span></div>
+        <div class="dir-card"><div class="dir-avatar">🏥</div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">Health Administrator B</div><div style="font-size:10px;color:var(--mid);margin-bottom:8px">CEO, Major Hospital</div><span class="badge-tag" style="background:var(--mintLt);color:var(--teal)">Individual</span></div>
+        <div class="dir-card"><div class="dir-avatar">🏥</div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">Health Administrator C</div><div style="font-size:10px;color:var(--mid);margin-bottom:8px">MoH Director, Kisumu</div><span class="badge-tag" style="background:var(--mintLt);color:var(--teal)">Life Member</span></div>
+        <div class="dir-card"><div class="dir-avatar">🏥</div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">Health Administrator D</div><div style="font-size:10px;color:var(--mid);margin-bottom:8px">Hospital Admin, Mombasa</div><span class="badge-tag" style="background:var(--mintLt);color:var(--teal)">Individual</span></div>
+        <div class="dir-card"><div class="dir-avatar">🏥</div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">Health Administrator E</div><div style="font-size:10px;color:var(--mid);margin-bottom:8px">Health Sys. Manager, Nakuru</div><span class="badge-tag" style="background:var(--mintLt);color:var(--teal)">Corporate</span></div>
+        <div class="dir-card"><div class="dir-avatar">🏥</div><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px">Health Administrator F</div><div style="font-size:10px;color:var(--mid);margin-bottom:8px">Strathmore University</div><span class="badge-tag" style="background:var(--mintLt);color:var(--teal)">Student</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- RESOURCES -->
+  <div id="portal-resources" class="portal-page">
+    <div class="portal-content">
+      <div class="filter-bar" style="margin-bottom:20px">
+        <div class="filter-pill active" onclick="this.closest('.filter-bar').querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">All</div>
+        <div class="filter-pill" onclick="this.closest('.filter-bar').querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">Policy Briefs</div>
+        <div class="filter-pill" onclick="this.closest('.filter-bar').querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">CPD Materials</div>
+        <div class="filter-pill" onclick="this.closest('.filter-bar').querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">Research</div>
+        <div class="filter-pill" onclick="this.closest('.filter-bar').querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active'));this.classList.add('active')">Conference Papers</div>
+      </div>
+      <div class="res-grid">
+        <div class="res-card" onclick="alert('Downloading: Digital Health Policy Brief 2025...')"><div class="res-thumb">📄</div><div class="res-body"><span class="badge-tag" style="background:var(--mintLt);color:var(--teal);display:inline-block;margin-bottom:6px">Policy Briefs</span><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4">Digital Health Policy Brief 2025</div><div style="font-size:10px;color:var(--lt);margin-bottom:10px">Apr 2025 · PDF · 2.4MB</div><button class="btn btn-teal btn-sm" style="width:100%">⬇ Download</button></div></div>
+        <div class="res-card" onclick="alert('Downloading: CPD Module 3...')"><div class="res-thumb">📊</div><div class="res-body"><span class="badge-tag" style="background:var(--mintLt);color:var(--teal);display:inline-block;margin-bottom:6px">CPD Materials</span><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4">Health Systems Leadership — CPD Module 3</div><div style="font-size:10px;color:var(--lt);margin-bottom:10px">Mar 2025 · PDF · 5.1MB</div><button class="btn btn-teal btn-sm" style="width:100%">⬇ Download</button></div></div>
+        <div class="res-card" onclick="alert('Downloading: Research Journal...')"><div class="res-thumb">🔬</div><div class="res-body"><span class="badge-tag" style="background:var(--mintLt);color:var(--teal);display:inline-block;margin-bottom:6px">Research</span><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4">Health Admin Research Journal Vol. 12</div><div style="font-size:10px;color:var(--lt);margin-bottom:10px">Feb 2025 · PDF · 8.2MB</div><button class="btn btn-teal btn-sm" style="width:100%">⬇ Download</button></div></div>
+        <div class="res-card" onclick="alert('Downloading: Conference Proceedings...')"><div class="res-thumb">🎤</div><div class="res-body"><span class="badge-tag" style="background:var(--mintLt);color:var(--teal);display:inline-block;margin-bottom:6px">Conference Papers</span><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4">8th Annual Conference Proceedings</div><div style="font-size:10px;color:var(--lt);margin-bottom:10px">Dec 2024 · PDF · 12MB</div><button class="btn btn-teal btn-sm" style="width:100%">⬇ Download</button></div></div>
+        <div class="res-card"><div class="res-thumb">📰</div><div class="res-body"><span class="badge-tag" style="background:var(--mintLt);color:var(--teal);display:inline-block;margin-bottom:6px">Newsletters</span><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4">KAHA Newsletter — Q1 2025</div><div style="font-size:10px;color:var(--lt);margin-bottom:10px">Jan 2025 · PDF · 1.8MB</div><button class="btn btn-teal btn-sm" style="width:100%" onclick="alert('Downloading...')">⬇ Download</button></div></div>
+        <div class="res-card"><div class="res-thumb">📋</div><div class="res-body"><span class="badge-tag" style="background:var(--mintLt);color:var(--teal);display:inline-block;margin-bottom:6px">Policy Briefs</span><div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.4">Health Admin Competency Framework</div><div style="font-size:10px;color:var(--lt);margin-bottom:10px">Nov 2024 · PDF · 3.5MB</div><button class="btn btn-teal btn-sm" style="width:100%" onclick="alert('Downloading...')">⬇ Download</button></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     4. MOBILE APP
+══════════════════════════════════════════════════════════════ -->
+<div id="app" class="section">
+  <div class="app-header">
+    <h2>📱 KAHA Members Mobile App</h2>
+    <p>Phase 2 · Android & iOS · Tap any screen element to interact</p>
+  </div>
+  <div class="phones-row">
+
+    <!-- PHONE 1: HOME -->
+    <div class="phone-wrap">
+      <div class="phone-label">HOME FEED</div>
+      <div class="phone-shell">
+        <div class="phone-notch"><div class="phone-notch-inner"><div class="phone-camera"></div><div class="phone-speaker"></div></div></div>
+        <div class="phone-screen">
+          <div class="phone-status"><span class="phone-status-time">9:41</span><span style="font-size:10px">📶🔋</span></div>
+          <div class="phone-screen-inner">
+            <div id="ph1-home" class="ph-screen active" style="flex-direction:column">
+              <div class="ph-header-grad">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:13px">
+                  <div><div style="font-size:10px;color:rgba(255,255,255,.65)">Welcome back,</div><div style="font-size:14px;font-weight:700;color:#fff">Health Member 👋</div></div>
+                  <div style="position:relative;width:30px;height:30px;background:rgba(255,255,255,.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer" onclick="alert('3 new notifications')">🔔<div style="position:absolute;top:2px;right:2px;width:7px;height:7px;background:var(--amber);border-radius:50%;border:1.5px solid #1A2B4A"></div></div>
+                </div>
+                <div class="ph-member-card">
+                  <div style="font-size:8px;color:var(--mint);font-weight:600;letter-spacing:1px">LIFE MEMBER</div>
+                  <div style="font-size:12px;font-weight:700;color:#fff;margin-top:2px">KAHA/LM/0042</div>
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px"><div style="font-size:8px;color:rgba(255,255,255,.55)">Valid: Dec 2025</div><span class="badge-tag" style="background:var(--mint);color:var(--navy)">ACTIVE</span></div>
+                </div>
+              </div>
+              <div class="ph-body">
+                <div style="font-size:11px;font-weight:700;color:var(--text)">Quick Actions</div>
+                <div class="ph-quick-grid">
+                  <div class="ph-quick-btn" onclick="switchPhoneTab('ph1','pay',this.closest('.phone-screen'))"><div class="ph-quick-icon">💳</div><div class="ph-quick-lbl">Pay Fees</div></div>
+                  <div class="ph-quick-btn" onclick="alert('Opening certificate...')"><div class="ph-quick-icon">📜</div><div class="ph-quick-lbl">Certificate</div></div>
+                  <div class="ph-quick-btn" onclick="switchPhoneTab('ph1','events',this.closest('.phone-screen'))"><div class="ph-quick-icon">📅</div><div class="ph-quick-lbl">Events</div></div>
+                  <div class="ph-quick-btn" onclick="switchPhoneTab('ph1','profile',this.closest('.phone-screen'))"><div class="ph-quick-icon">👥</div><div class="ph-quick-lbl">Profile</div></div>
+                </div>
+                <div style="font-size:11px;font-weight:700;color:var(--text)">Notifications</div>
+                <div class="ph-notif" style="border-left:3px solid var(--teal);cursor:pointer" onclick="alert('9th Annual Scientific Conference 2025 registration is now open! Click to register.')"><div style="font-size:10px;color:var(--text);line-height:1.4">🎉 Conference 2025 registration is now open!</div><div style="font-size:8px;color:var(--lt);margin-top:3px">2h ago</div></div>
+                <div class="ph-notif" style="border-left:3px solid var(--amber);cursor:pointer" onclick="alert('Membership renewal due in 60 days. Pay now to stay active.')"><div style="font-size:10px;color:var(--text);line-height:1.4">💳 Membership renewal due in 60 days</div><div style="font-size:8px;color:var(--lt);margin-top:3px">2d ago</div></div>
+              </div>
+              <div class="ph-tabbar">
+                <div class="ph-tab active" onclick="switchPhoneTab('ph1','home',this.closest('.phone-screen'))"><div class="ph-tab-icon">🏠</div><div class="ph-tab-label">Home</div><div class="ph-tab-dot"></div></div>
+                <div class="ph-tab" onclick="switchPhoneTab('ph1','pay',this.closest('.phone-screen'))"><div class="ph-tab-icon">💳</div><div class="ph-tab-label">Pay</div></div>
+                <div class="ph-tab" onclick="switchPhoneTab('ph1','events',this.closest('.phone-screen'))"><div class="ph-tab-icon">📅</div><div class="ph-tab-label">Events</div></div>
+                <div class="ph-tab" onclick="switchPhoneTab('ph1','profile',this.closest('.phone-screen'))"><div class="ph-tab-icon">👤</div><div class="ph-tab-label">Profile</div></div>
+              </div>
+            </div>
+            <div id="ph1-pay" class="ph-screen" style="flex-direction:column">
+              <div class="ph-header-plain"><div style="font-size:14px;font-weight:700;color:#fff">Pay Membership Fee</div><div style="font-size:10px;color:rgba(255,255,255,.55);margin-top:2px">Secure payment via M-Pesa</div></div>
+              <div class="ph-body">
+                <div class="ph-card">
+                  <div class="ph-card-title">Payment Summary</div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:10px;color:var(--mid)">Annual Fee 2025</span><span style="font-size:10px">KES 5,000</span></div>
+                  <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:10px;color:var(--mid)">Processing Fee</span><span style="font-size:10px">KES 50</span></div>
+                  <div style="display:flex;justify-content:space-between;border-top:1px solid var(--border);padding-top:6px;margin-top:3px"><span style="font-size:11px;font-weight:700">Total</span><span style="font-size:13px;font-weight:700;color:var(--teal)">KES 5,050</span></div>
+                </div>
+                <div><div style="font-size:9px;font-weight:600;color:#00A850;margin-bottom:4px">M-PESA NUMBER</div><input style="width:100%;background:#fff;border:1.5px solid var(--teal);border-radius:8px;padding:9px 11px;font-size:12px" placeholder="+254 7__ ___ ___"></div>
+                <button class="ph-btn" style="background:#00A850;color:#fff" onclick="alert('M-Pesa STK Push sent to +254 7XX XXX XXX.\nCheck your phone and enter your PIN to confirm.')">📲 Send M-Pesa Prompt — KES 5,050</button>
+                <div style="display:flex;align-items:center;gap:7px"><div style="flex:1;height:1px;background:var(--border)"></div><span style="font-size:8px;color:var(--lt)">OR</span><div style="flex:1;height:1px;background:var(--border)"></div></div>
+                <button class="ph-btn" style="background:var(--navy);color:#fff" onclick="alert('Redirecting to card payment...')">💳 Visa / Mastercard</button>
+                <div style="text-align:center;font-size:9px;color:var(--lt)">🔒 SSL secured · Instant receipt</div>
+              </div>
+              <div class="ph-tabbar">
+                <div class="ph-tab" onclick="switchPhoneTab('ph1','home',this.closest('.phone-screen'))"><div class="ph-tab-icon">🏠</div><div class="ph-tab-label">Home</div></div>
+                <div class="ph-tab active" onclick="switchPhoneTab('ph1','pay',this.closest('.phone-screen'))"><div class="ph-tab-icon">💳</div><div class="ph-tab-label">Pay</div><div class="ph-tab-dot"></div></div>
+                <div class="ph-tab" onclick="switchPhoneTab('ph1','events',this.closest('.phone-screen'))"><div class="ph-tab-icon">📅</div><div class="ph-tab-label">Events</div></div>
+                <div class="ph-tab" onclick="switchPhoneTab('ph1','profile',this.closest('.phone-screen'))"><div class="ph-tab-icon">👤</div><div class="ph-tab-label">Profile</div></div>
+              </div>
+            </div>
+            <div id="ph1-events" class="ph-screen" style="flex-direction:column">
+              <div class="ph-header-plain"><div style="font-size:14px;font-weight:700;color:#fff">📅 Events & CPD</div></div>
+              <div class="ph-body">
+                <div style="display:flex;gap:5px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px">
+                  <span style="padding:4px 11px;background:var(--teal);border-radius:20px;font-size:9px;color:#fff;white-space:nowrap">All</span>
+                  <span style="padding:4px 11px;background:#fff;border:1.5px solid var(--border);border-radius:20px;font-size:9px;color:var(--mid);white-space:nowrap">CPD</span>
+                  <span style="padding:4px 11px;background:#fff;border:1.5px solid var(--border);border-radius:20px;font-size:9px;color:var(--mid);white-space:nowrap">Conference</span>
+                </div>
+                <div style="background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;cursor:pointer" onclick="alert('CPD Workshop — Health Systems Leadership\nJun 14, 2025 · Nairobi CBD\n\nKES 3,500 for members')"><div style="width:46px;background:var(--teal);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;"><div style="font-size:12px;font-weight:700;color:#fff;line-height:1">JUN</div><div style="font-size:10px;color:rgba(255,255,255,.8)">14</div></div><div style="flex:1;padding:10px 11px"><div style="font-size:10px;font-weight:700;color:var(--text);margin-bottom:2px">CPD Workshop</div><div style="font-size:8px;color:var(--mid);margin-bottom:7px">📍 Nairobi CBD · In-Person</div><button style="background:var(--teal);border:none;border-radius:5px;padding:4px 10px;color:#fff;font-size:8px;font-weight:600;cursor:pointer" onclick="event.stopPropagation();alert('Registering for CPD Workshop...\nYou will receive a confirmation email.')">Register →</button></div></div>
+                <div style="background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;cursor:pointer" onclick="alert('Annual General Meeting 2025\nAug 02, 2025 · Virtual · Zoom\n\nFree for all members')"><div style="width:46px;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;"><div style="font-size:12px;font-weight:700;color:#fff;line-height:1">AUG</div><div style="font-size:10px;color:rgba(255,255,255,.8)">02</div></div><div style="flex:1;padding:10px 11px"><div style="font-size:10px;font-weight:700;color:var(--text);margin-bottom:2px">AGM 2025</div><div style="font-size:8px;color:var(--mid);margin-bottom:7px">📍 Virtual · Zoom</div><button style="background:var(--navy);border:none;border-radius:5px;padding:4px 10px;color:#fff;font-size:8px;font-weight:600;cursor:pointer" onclick="event.stopPropagation();alert('Registering for AGM...')">Register →</button></div></div>
+                <div style="background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden;display:flex;cursor:pointer" onclick="alert('9th Annual Scientific Conference\nDec 01–03, 2025 · KICC, Nairobi\n\nKES 8,500 for members')"><div style="width:46px;background:var(--amber);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;"><div style="font-size:12px;font-weight:700;color:#fff;line-height:1">DEC</div><div style="font-size:10px;color:rgba(255,255,255,.9)">01</div></div><div style="flex:1;padding:10px 11px"><div style="font-size:10px;font-weight:700;color:var(--text);margin-bottom:2px">Annual Conference</div><div style="font-size:8px;color:var(--mid);margin-bottom:7px">📍 KICC, Nairobi · 3 Days</div><button style="background:var(--amber);border:none;border-radius:5px;padding:4px 10px;color:var(--navy);font-size:8px;font-weight:600;cursor:pointer" onclick="event.stopPropagation();alert('Registering for Annual Conference...')">Register →</button></div></div>
+              </div>
+              <div class="ph-tabbar">
+                <div class="ph-tab" onclick="switchPhoneTab('ph1','home',this.closest('.phone-screen'))"><div class="ph-tab-icon">🏠</div><div class="ph-tab-label">Home</div></div>
+                <div class="ph-tab" onclick="switchPhoneTab('ph1','pay',this.closest('.phone-screen'))"><div class="ph-tab-icon">💳</div><div class="ph-tab-label">Pay</div></div>
+                <div class="ph-tab active" onclick="switchPhoneTab('ph1','events',this.closest('.phone-screen'))"><div class="ph-tab-icon">📅</div><div class="ph-tab-label">Events</div><div class="ph-tab-dot"></div></div>
+                <div class="ph-tab" onclick="switchPhoneTab('ph1','profile',this.closest('.phone-screen'))"><div class="ph-tab-icon">👤</div><div class="ph-tab-label">Profile</div></div>
+              </div>
+            </div>
+            <div id="ph1-profile" class="ph-screen" style="flex-direction:column">
+              <div style="background:linear-gradient(135deg,var(--navy),var(--teal));padding:18px 14px 22px;display:flex;flex-direction:column;align-items:center;gap:6px;flex-shrink:0">
+                <div style="width:52px;height:52px;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px">🏥</div>
+                <div style="font-size:14px;font-weight:700;color:#fff">Health Professional</div>
+                <span class="badge-tag" style="background:var(--mint);color:var(--navy)">Life Member · KAHA/LM/0042</span>
+              </div>
+              <div class="ph-body">
+                <div style="display:flex;gap:6px">
+                  <div style="flex:1;background:#fff;border:1px solid var(--border);border-radius:9px;padding:9px 7px;text-align:center"><div style="font-size:12px;font-weight:700;color:var(--teal)">2025</div><div style="font-size:8px;color:var(--lt);margin-top:2px">Since</div></div>
+                  <div style="flex:1;background:#fff;border:1px solid var(--border);border-radius:9px;padding:9px 7px;text-align:center"><div style="font-size:12px;font-weight:700;color:var(--green)">✓ Active</div><div style="font-size:8px;color:var(--lt);margin-top:2px">Status</div></div>
+                  <div style="flex:1;background:#fff;border:1px solid var(--border);border-radius:9px;padding:9px 7px;text-align:center"><div style="font-size:12px;font-weight:700;color:var(--amber)">3 hrs</div><div style="font-size:8px;color:var(--lt);margin-top:2px">CPD</div></div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:5px">
+                  <div style="background:#fff;border:1px solid var(--border);border-radius:9px;padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="alert('Personal Details form')"><div style="width:28px;height:28px;background:rgba(2,128,144,.12);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px">👤</div><span style="flex:1;font-size:11px;color:var(--text)">Personal Details</span><span style="color:var(--lt)">›</span></div>
+                  <div style="background:#fff;border:1px solid var(--border);border-radius:9px;padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="alert('Opening membership certificate...')"><div style="width:28px;height:28px;background:rgba(2,128,144,.12);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px">📜</div><span style="flex:1;font-size:11px;color:var(--text)">My Certificate</span><span style="color:var(--lt)">›</span></div>
+                  <div style="background:#fff;border:1px solid var(--border);border-radius:9px;padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="alert('Payment history: 2 records\n• Annual Fee 2025 – KES 5,050 ✅\n• Annual Fee 2024 – KES 5,050 ✅')"><div style="width:28px;height:28px;background:rgba(2,128,144,.12);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px">💳</div><span style="flex:1;font-size:11px;color:var(--text)">Payment History</span><span style="color:var(--lt)">›</span></div>
+                  <div style="background:#fff;border:1px solid var(--border);border-radius:9px;padding:10px 12px;display:flex;align-items:center;gap:10px;cursor:pointer" onclick="alert('Signing out...')"><div style="width:28px;height:28px;background:rgba(226,76,76,.12);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px">🚪</div><span style="flex:1;font-size:11px;color:var(--red)">Sign Out</span><span style="color:var(--lt)">›</span></div>
+                </div>
+              </div>
+              <div class="ph-tabbar">
+                <div class="ph-tab" onclick="switchPhoneTab('ph1','home',this.closest('.phone-screen'))"><div class="ph-tab-icon">🏠</div><div class="ph-tab-label">Home</div></div>
+                <div class="ph-tab" onclick="switchPhoneTab('ph1','pay',this.closest('.phone-screen'))"><div class="ph-tab-icon">💳</div><div class="ph-tab-label">Pay</div></div>
+                <div class="ph-tab" onclick="switchPhoneTab('ph1','events',this.closest('.phone-screen'))"><div class="ph-tab-icon">📅</div><div class="ph-tab-label">Events</div></div>
+                <div class="ph-tab active" onclick="switchPhoneTab('ph1','profile',this.closest('.phone-screen'))"><div class="ph-tab-icon">👤</div><div class="ph-tab-label">Profile</div><div class="ph-tab-dot"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ph-home-indicator"><div class="ph-home-bar"></div></div>
+      </div>
+    </div>
+
+    <!-- PHONE 2: CERTIFICATE SCREEN -->
+    <div class="phone-wrap">
+      <div class="phone-label">DIGITAL CERTIFICATE</div>
+      <div class="phone-shell">
+        <div class="phone-notch"><div class="phone-notch-inner"><div class="phone-camera"></div><div class="phone-speaker"></div></div></div>
+        <div class="phone-screen">
+          <div class="phone-status"><span class="phone-status-time">9:41</span><span style="font-size:10px">📶🔋</span></div>
+          <div class="phone-screen-inner" style="height:100%;overflow-y:auto">
+            <div style="background:var(--navy);padding:12px 14px 14px;display:flex;align-items:center;gap:8px"><span style="color:#fff;font-size:18px;cursor:pointer">←</span><div style="font-size:14px;font-weight:700;color:#fff">My Certificate</div></div>
+            <div style="padding:13px;background:var(--bg);display:flex;flex-direction:column;gap:10px">
+              <div style="background:linear-gradient(135deg,var(--navy),var(--teal));border-radius:14px;padding:18px 16px;position:relative;overflow:hidden"><div style="position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:rgba(255,255,255,.05);border-radius:50%"></div><div style="font-size:8px;color:var(--mint);font-weight:600;letter-spacing:1.5px;margin-bottom:5px">CERTIFICATE OF MEMBERSHIP</div><div style="font-size:22px;margin-bottom:6px">🏥</div><div style="font-size:14px;font-weight:700;color:#fff;line-height:1.3;margin-bottom:6px">Kenya Association of<br>Health Administrators</div><div style="height:1px;background:rgba(255,255,255,.2);margin:8px 0"></div><div style="font-size:9px;color:rgba(255,255,255,.6)">This certifies that</div><div style="font-size:13px;font-weight:700;color:#fff;margin:3px 0">Health Professional</div><div style="font-size:9px;color:var(--mint)">is a verified Life Member in good standing</div><div style="display:flex;justify-content:space-between;margin-top:10px;font-size:8px;color:rgba(255,255,255,.45)"><span>KAHA/LM/0042</span><span>Valid: Dec 2025</span></div></div>
+              <div style="display:flex;gap:7px">
+                <button class="ph-btn" style="flex:1;background:var(--teal);color:#fff;font-size:10px" onclick="alert('Certificate PDF download would start here.')">⬇ Download PDF</button>
+                <button style="flex:1;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:10px;font-size:10px;cursor:pointer" onclick="alert('Share: Email / WhatsApp / Link')">📤 Share</button>
+              </div>
+              <div class="ph-card">
+                <div class="ph-card-title">Certificate Details</div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:9px;color:var(--mid)">Member ID</span><span style="font-size:9px;font-weight:600;color:var(--text)">KAHA/LM/0042</span></div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:9px;color:var(--mid)">Category</span><span style="font-size:9px;font-weight:600;color:var(--text)">Life Member</span></div>
+                <div style="display:flex;justify-content:space-between"><span style="font-size:9px;color:var(--mid)">Valid Through</span><span style="font-size:9px;font-weight:600;color:var(--green)">December 2025</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ph-home-indicator"><div class="ph-home-bar"></div></div>
+      </div>
+    </div>
+
+    <!-- PHONE 3: PAYMENT SUCCESS -->
+    <div class="phone-wrap">
+      <div class="phone-label">PAYMENT SUCCESS</div>
+      <div class="phone-shell">
+        <div class="phone-notch"><div class="phone-notch-inner"><div class="phone-camera"></div><div class="phone-speaker"></div></div></div>
+        <div class="phone-screen">
+          <div class="phone-status"><span class="phone-status-time">9:41</span><span style="font-size:10px">📶🔋</span></div>
+          <div class="phone-screen-inner" style="height:100%;overflow-y:auto">
+            <div style="padding:24px 16px;display:flex;flex-direction:column;align-items:center;gap:14px;background:var(--bg)">
+              <div style="width:64px;height:64px;background:var(--greenLt);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px">✅</div>
+              <div style="font-size:17px;font-weight:700;color:var(--text);text-align:center">Payment Successful!</div>
+              <div style="font-size:11px;color:var(--mid);text-align:center;line-height:1.6">Your M-Pesa payment of <strong>KES 5,050</strong> has been confirmed. Receipt emailed to you.</div>
+              <div style="background:var(--greenLt);border:1px solid var(--green);border-radius:12px;padding:14px;width:100%">
+                <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:9px;color:var(--mid)">Reference</span><span style="font-size:9px;font-weight:600;color:var(--text)">KAHA-2025-00412</span></div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:9px;color:var(--mid)">Amount</span><span style="font-size:9px;font-weight:600;color:var(--text)">KES 5,050</span></div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:9px;color:var(--mid)">Method</span><span style="font-size:9px;font-weight:600;color:var(--text)">M-Pesa</span></div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:9px;color:var(--mid)">Date</span><span style="font-size:9px;font-weight:600;color:var(--text)">24 Apr 2025</span></div>
+                <div style="display:flex;justify-content:space-between"><span style="font-size:9px;color:var(--mid)">Status</span><span style="font-size:9px;font-weight:700;color:var(--green)">✅ Confirmed</span></div>
+              </div>
+              <div style="display:flex;gap:7px;width:100%">
+                <button class="ph-btn" style="flex:1;background:var(--teal);color:#fff;font-size:10px" onclick="alert('Downloading payment receipt PDF...')">⬇ Download Receipt</button>
+                <button style="flex:1;background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:10px;font-size:10px;cursor:pointer" onclick="alert('Back to Home')">Back to Home</button>
+              </div>
+              <div style="background:var(--mintLt);border-radius:10px;padding:12px;width:100%;text-align:center"><div style="font-size:10px;font-weight:700;color:var(--teal);margin-bottom:3px">🎉 Membership Active!</div><div style="font-size:9px;color:var(--mid)">Your membership is now active and your digital certificate has been updated.</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="ph-home-indicator"><div class="ph-home-bar"></div></div>
+      </div>
+    </div>
+
+    <!-- PHONE 4: APP OVERVIEW / ONBOARDING -->
+    <div class="phone-wrap">
+      <div class="phone-label">APP OVERVIEW</div>
+      <div class="phone-shell">
+        <div class="phone-notch"><div class="phone-notch-inner"><div class="phone-camera"></div><div class="phone-speaker"></div></div></div>
+        <div class="phone-screen">
+          <div class="phone-status" style="background:var(--navyDk)"><span class="phone-status-time">9:41</span><span style="font-size:10px">📶🔋</span></div>
+          <div class="phone-screen-inner" style="height:100%;position:relative;overflow:hidden">
+
+            <!-- SLIDE 0: SPLASH -->
+            <div id="ob-0" style="position:absolute;inset:0;background:linear-gradient(160deg,#0F1E30 0%,#1A2B4A 50%,#028090 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;gap:12px;transition:opacity .3s">
+              <div style="width:70px;height:70px;background:rgba(2,195,154,.15);border:2px solid rgba(2,195,154,.3);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:36px">🏥</div>
+              <div style="font-size:22px;font-weight:800;color:#fff;text-align:center;line-height:1.2">KAHA<br>Members</div>
+              <div style="font-size:9px;color:var(--mint);letter-spacing:2px;font-weight:600;text-align:center">KENYA ASSOCIATION OF<br>HEALTH ADMINISTRATORS</div>
+              <div style="height:1px;width:60px;background:rgba(255,255,255,.2);margin:4px 0"></div>
+              <div style="font-size:10px;color:rgba(255,255,255,.55);text-align:center;line-height:1.6">Your professional membership<br>in your pocket</div>
+              <button onclick="goSlide(1)" style="margin-top:12px;background:var(--mint);border:none;border-radius:10px;padding:12px 28px;color:var(--navy);font-size:12px;font-weight:800;cursor:pointer;width:100%">Get Started →</button>
+              <div onclick="goSlide(4)" style="font-size:10px;color:rgba(255,255,255,.4);cursor:pointer;margin-top:4px">Already a member? Log in</div>
+            </div>
+
+            <!-- SLIDE 1: ONBOARDING 1 -->
+            <div id="ob-1" style="position:absolute;inset:0;background:#fff;display:none;flex-direction:column">
+              <div style="background:linear-gradient(135deg,var(--teal),#028090);height:55%;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+                <div style="position:absolute;width:180px;height:180px;background:rgba(255,255,255,.06);border-radius:50%;top:-40px;right:-40px"></div>
+                <div style="font-size:72px">💳</div>
+              </div>
+              <div style="flex:1;padding:20px 18px;display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;justify-content:center;gap:5px;margin-bottom:4px">
+                  <div style="width:20px;height:4px;background:var(--teal);border-radius:2px"></div>
+                  <div style="width:8px;height:4px;background:var(--border);border-radius:2px"></div>
+                  <div style="width:8px;height:4px;background:var(--border);border-radius:2px"></div>
+                </div>
+                <div style="font-size:17px;font-weight:800;color:var(--navy);text-align:center;line-height:1.3">Pay Fees Instantly<br>via M-Pesa</div>
+                <div style="font-size:11px;color:var(--mid);text-align:center;line-height:1.7">Renew your membership, pay conference fees, and get instant receipts — all from your phone with M-Pesa or card.</div>
+                <div style="margin-top:auto;display:flex;gap:8px">
+                  <button onclick="goSlide(0)" style="flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:11px;font-size:11px;color:var(--mid);cursor:pointer">← Back</button>
+                  <button onclick="goSlide(2)" style="flex:2;background:var(--teal);border:none;border-radius:10px;padding:11px;font-size:11px;font-weight:700;color:#fff;cursor:pointer">Next →</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- SLIDE 2: ONBOARDING 2 -->
+            <div id="ob-2" style="position:absolute;inset:0;background:#fff;display:none;flex-direction:column">
+              <div style="background:linear-gradient(135deg,var(--navy),#1A4A5A);height:55%;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+                <div style="position:absolute;width:180px;height:180px;background:rgba(2,195,154,.08);border-radius:50%;bottom:-40px;left:-40px"></div>
+                <div style="font-size:72px">📜</div>
+              </div>
+              <div style="flex:1;padding:20px 18px;display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;justify-content:center;gap:5px;margin-bottom:4px">
+                  <div style="width:8px;height:4px;background:var(--border);border-radius:2px"></div>
+                  <div style="width:20px;height:4px;background:var(--navy);border-radius:2px"></div>
+                  <div style="width:8px;height:4px;background:var(--border);border-radius:2px"></div>
+                </div>
+                <div style="font-size:17px;font-weight:800;color:var(--navy);text-align:center;line-height:1.3">Your Certificate<br>Always with You</div>
+                <div style="font-size:11px;color:var(--mid);text-align:center;line-height:1.7">Access and share your digital KAHA membership certificate anywhere, anytime. Download as PDF or share a verified link.</div>
+                <div style="margin-top:auto;display:flex;gap:8px">
+                  <button onclick="goSlide(1)" style="flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:11px;font-size:11px;color:var(--mid);cursor:pointer">← Back</button>
+                  <button onclick="goSlide(3)" style="flex:2;background:var(--navy);border:none;border-radius:10px;padding:11px;font-size:11px;font-weight:700;color:#fff;cursor:pointer">Next →</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- SLIDE 3: ONBOARDING 3 -->
+            <div id="ob-3" style="position:absolute;inset:0;background:#fff;display:none;flex-direction:column">
+              <div style="background:linear-gradient(135deg,#1E6B40,var(--mint));height:55%;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+                <div style="position:absolute;width:160px;height:160px;background:rgba(255,255,255,.07);border-radius:50%;top:-30px;left:-30px"></div>
+                <div style="font-size:72px">📅</div>
+              </div>
+              <div style="flex:1;padding:20px 18px;display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;justify-content:center;gap:5px;margin-bottom:4px">
+                  <div style="width:8px;height:4px;background:var(--border);border-radius:2px"></div>
+                  <div style="width:8px;height:4px;background:var(--border);border-radius:2px"></div>
+                  <div style="width:20px;height:4px;background:var(--mint);border-radius:2px"></div>
+                </div>
+                <div style="font-size:17px;font-weight:800;color:var(--navy);text-align:center;line-height:1.3">Events, CPD &<br>Notifications</div>
+                <div style="font-size:11px;color:var(--mid);text-align:center;line-height:1.7">Stay updated on KAHA events, register for CPD workshops, and receive push notifications directly to your phone.</div>
+                <div style="margin-top:auto;display:flex;gap:8px">
+                  <button onclick="goSlide(2)" style="flex:1;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:11px;font-size:11px;color:var(--mid);cursor:pointer">← Back</button>
+                  <button onclick="goSlide(4)" style="flex:2;background:var(--mint);border:none;border-radius:10px;padding:11px;font-size:11px;font-weight:800;color:var(--navy);cursor:pointer">Create Account →</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- SLIDE 4: LOGIN -->
+            <div id="ob-4" style="position:absolute;inset:0;background:var(--bg);display:none;flex-direction:column">
+              <div style="background:linear-gradient(135deg,var(--navy),var(--teal));padding:28px 18px 32px;display:flex;flex-direction:column;align-items:center;gap:8px">
+                <div style="width:48px;height:48px;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px">🏥</div>
+                <div style="font-size:16px;font-weight:800;color:#fff">Welcome Back</div>
+                <div style="font-size:10px;color:rgba(255,255,255,.55)">Sign in to your KAHA account</div>
+              </div>
+              <div style="flex:1;padding:20px 16px;display:flex;flex-direction:column;gap:12px">
+                <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px">
+                  <div>
+                    <div style="font-size:10px;font-weight:600;color:var(--text);margin-bottom:5px">Email Address</div>
+                    <input style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--text)" placeholder="member@example.com">
+                  </div>
+                  <div>
+                    <div style="font-size:10px;font-weight:600;color:var(--text);margin-bottom:5px">Password</div>
+                    <input type="password" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:12px;color:var(--text)" placeholder="••••••••">
+                  </div>
+                  <div style="text-align:right;font-size:10px;color:var(--teal);cursor:pointer">Forgot password?</div>
+                  <button onclick="alert('Logging in...\nRedirecting to your dashboard.')" style="width:100%;background:var(--teal);border:none;border-radius:10px;padding:12px;color:#fff;font-size:12px;font-weight:700;cursor:pointer">Log In to KAHA</button>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px"><div style="flex:1;height:1px;background:var(--border)"></div><span style="font-size:9px;color:var(--lt)">OR</span><div style="flex:1;height:1px;background:var(--border)"></div></div>
+                <button onclick="goSlide(0)" style="width:100%;background:var(--navy);border:none;border-radius:10px;padding:12px;color:#fff;font-size:12px;font-weight:600;cursor:pointer">New member? Apply here →</button>
+                <div style="text-align:center;font-size:10px;color:var(--lt)">Need help? Contact secretariat@kaha.or.ke</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="ph-home-indicator"><div class="ph-home-bar"></div></div>
+      </div>
+    </div>
+
+  </div>
+  <div style="text-align:center;margin-top:24px;font-size:11px;color:var(--mid)">💡 The left phone navigates via tabs · The right phone shows the app onboarding — tap <strong>Get Started</strong> then swipe through the 3 overview slides</div>
+</div>
+
+<script>
+function goSlide(n) {
+  for(let i=0;i<=4;i++){
+    const el = document.getElementById('ob-'+i);
+    if(el){ el.style.display = 'none'; el.style.opacity = '0'; }
+  }
+  const target = document.getElementById('ob-'+n);
+  if(target){
+    target.style.display = 'flex';
+    setTimeout(()=>{ target.style.opacity='1'; }, 10);
+  }
+}
+</script>
+// ── MAIN SECTION SWITCHER ──────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  el.style.display = id === 'dashboard' ? 'flex' : 'block';
+  document.querySelectorAll('#chrome .tab').forEach(t => t.classList.remove('active'));
+  const tabs = {'website':0,'dashboard':1,'portal':2,'app':3};
+  document.querySelectorAll('#chrome .tab')[tabs[id]].classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── WEBSITE PAGE SWITCHER ──────────────────────────────────────
+function showPage(prefix, pageId, linkEl) {
+  document.querySelectorAll(`#website .page`).forEach(p => p.classList.remove('active'));
+  const page = document.getElementById(`${prefix}-${pageId}`);
+  if(page) page.classList.add('active');
+  document.querySelectorAll('#website .sn-link').forEach(l => l.classList.remove('active'));
+  if(linkEl) linkEl.classList.add('active');
+  document.getElementById('website').scrollTo(0, 0);
+}
+
+// ── DASHBOARD PAGE SWITCHER ────────────────────────────────────
+const dbTitles = {
+  overview: '📊 Overview', members: '👥 Members', payments: '💳 Payments',
+  dbevents: '📅 Events', comms: '📢 Communications', reports: '📄 Reports', settings: '⚙️ Settings'
+};
+function showDbPage(pageId, itemEl) {
+  document.querySelectorAll('#dashboard .db-page').forEach(p => p.classList.remove('active'));
+  document.getElementById(`db-${pageId}`).classList.add('active');
+  document.querySelectorAll('#dashboard .db-item').forEach(i => i.classList.remove('active'));
+  if(itemEl) itemEl.classList.add('active');
+  document.getElementById('dbPageTitle').innerHTML = `<div style="font-size:16px;font-weight:700;color:var(--text)">${dbTitles[pageId]||pageId}</div><div style="font-size:10px;color:var(--lt)">Kenya Association of Health Administrators</div>`;
+}
+
+// ── PORTAL PAGE SWITCHER ───────────────────────────────────────
+function showPortalPage(pageId) {
+  document.querySelectorAll('#portal .portal-page').forEach(p => p.classList.remove('active'));
+  document.getElementById(`portal-${pageId}`).classList.add('active');
+  document.querySelectorAll('#portal .portal-subtab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`ptab-${pageId}`).classList.add('active');
+  document.querySelector('#portal').scrollTo(0,0);
+}
+// Expose for cross-section nav
+window.showPortalPage = showPortalPage;
+
+// ── PHONE SCREEN SWITCHER ──────────────────────────────────────
+function switchPhoneTab(phoneId, screenId, phoneScreenEl) {
+  const screens = phoneScreenEl.querySelectorAll('.ph-screen');
+  screens.forEach(s => s.classList.remove('active'));
+  const target = phoneScreenEl.querySelector(`#${phoneId}-${screenId}`);
+  if(target) target.classList.add('active');
+  const tabs = phoneScreenEl.querySelectorAll('.ph-tab');
+  tabs.forEach(t => {
+    t.classList.remove('active');
+    const dot = t.querySelector('.ph-tab-dot');
+    if(dot) dot.remove();
+  });
+  const tabMap = {home:0, pay:1, events:2, profile:3};
+  const activeTab = tabs[tabMap[screenId]];
+  if(activeTab) {
+    activeTab.classList.add('active');
+    const dot = document.createElement('div');
+    dot.className = 'ph-tab-dot';
+    activeTab.appendChild(dot);
+  }
+}
+
+// ── EVENT FILTER ───────────────────────────────────────────────
+function filterEvt(pillEl, tag) {
+  document.querySelectorAll('#evtFilter .filter-pill').forEach(p => p.classList.remove('active'));
+  pillEl.classList.add('active');
+  document.querySelectorAll('#ws-events .event-card').forEach(card => {
+    card.style.display = (tag === 'All' || card.dataset.tag === tag) ? 'flex' : 'none';
+  });
+}
+
+// Init
+showSection('website');
+</script>
+</body>
+</html>
