@@ -255,19 +255,19 @@ button{border:none;background:none;}
 /* ══════════════════════════════════════════════════════════════
    4. MOBILE APP
 ══════════════════════════════════════════════════════════════ */
-#app{background:#D8E4E8;padding:30px 24px;}
-#app .app-header{text-align:center;margin-bottom:24px;}
-#app .app-header h2{font-size:20px;font-weight:800;color:var(--navy);}
+#app{background:#D8E4E8;padding:40px 32px;}
+#app .app-header{text-align:center;margin-bottom:32px;}
+#app .app-header h2{font-size:22px;font-weight:800;color:var(--navy);}
 #app .app-header p{font-size:12px;color:var(--mid);margin-top:4px;}
-#app .phones-row{display:grid;grid-template-columns:repeat(3,auto);gap:24px;justify-content:center;}
-.phone-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;}
-.phone-label{font-size:9px;font-weight:700;color:var(--mid);letter-spacing:.5px;text-align:center;}
-.phone-shell{width:200px;background:#0F1E30;border-radius:38px;padding:12px 9px 9px;box-shadow:0 20px 50px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.07);}
-.phone-notch{display:flex;justify-content:center;margin-bottom:7px;}
-.phone-notch-inner{width:90px;height:26px;background:#0F1E30;border-radius:15px;display:flex;align-items:center;justify-content:center;gap:6px;}
-.phone-camera{width:7px;height:7px;background:#222;border-radius:50%;}
-.phone-speaker{width:44px;height:5px;background:#222;border-radius:3px;}
-.phone-screen{background:var(--bg);border-radius:28px;overflow:hidden;height:520px;display:flex;flex-direction:column;}
+#app .phones-row{display:grid;grid-template-columns:repeat(3,auto);gap:36px 28px;justify-content:center;}
+.phone-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.phone-label{font-size:10px;font-weight:700;color:var(--mid);letter-spacing:.8px;text-align:center;text-transform:uppercase;}
+.phone-shell{width:230px;background:#0F1E30;border-radius:44px;padding:14px 11px 11px;box-shadow:0 24px 60px rgba(0,0,0,.4),inset 0 0 0 1px rgba(255,255,255,.08);}
+.phone-notch{display:flex;justify-content:center;margin-bottom:8px;}
+.phone-notch-inner{width:100px;height:28px;background:#0F1E30;border-radius:16px;display:flex;align-items:center;justify-content:center;gap:6px;}
+.phone-camera{width:8px;height:8px;background:#222;border-radius:50%;}
+.phone-speaker{width:48px;height:5px;background:#222;border-radius:3px;}
+.phone-screen{background:var(--bg);border-radius:32px;overflow:hidden;height:580px;display:flex;flex-direction:column;}
 .phone-status{background:var(--navy);padding:5px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
 .phone-status-time{font-size:10px;color:rgba(255,255,255,.8);font-weight:600;}
 .phone-screen-inner{flex:1;overflow:hidden;}
@@ -296,8 +296,8 @@ button{border:none;background:none;}
 .ph-btn{width:100%;border:none;border-radius:8px;padding:11px;font-size:11px;font-weight:700;cursor:pointer;transition:opacity .15s;}
 .ph-btn:hover{opacity:.85;}
 .ph-member-card{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:11px 13px;}
-.ph-home-indicator{display:flex;justify-content:center;margin-top:7px;}
-.ph-home-bar{width:90px;height:4px;background:rgba(255,255,255,.28);border-radius:2px;}
+.ph-home-indicator{display:flex;justify-content:center;margin-top:9px;}
+.ph-home-bar{width:100px;height:4px;background:rgba(255,255,255,.28);border-radius:2px;}
 </style>
 </head>
 <body>
@@ -1313,7 +1313,10 @@ button{border:none;background:none;}
     </div>
 
   </div>
-  <div style="text-align:center;margin-top:24px;font-size:11px;color:var(--mid)">💡 Row 1: Interactive Home (navigate via tabs) · Certificate · Payment Success &nbsp;|&nbsp; Row 2: App Overview (tap Get Started) · Notifications · Member Directory</div>
+  <div style="text-align:center;margin-top:32px;font-size:12px;color:var(--mid);line-height:1.8">
+    💡 <strong>Row 1:</strong> Home Feed (tap tabs to navigate) &nbsp;·&nbsp; Digital Certificate &nbsp;·&nbsp; Payment Success<br>
+    <strong>Row 2:</strong> App Overview (tap Get Started to onboard) &nbsp;·&nbsp; Notifications &nbsp;·&nbsp; Member Directory
+  </div>
 </div>
 
 <script>
